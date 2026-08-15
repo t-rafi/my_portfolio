@@ -188,10 +188,23 @@ const storage = {
   const projects = document.querySelectorAll('.project-card[data-category]');
   if (!filters.length || !projects.length) return;
 
+  const indicator = document.createElement('span');
+  indicator.className = 'filter-indicator';
+  filters[0].parentElement?.append(indicator);
+  const moveIndicator = (filter) => {
+    const parent = filter.parentElement;
+    indicator.style.width = `${filter.offsetWidth}px`;
+    indicator.style.height = `${filter.offsetHeight}px`;
+    indicator.style.transform = `translate(${filter.offsetLeft - parent.offsetLeft}px, ${filter.offsetTop - parent.offsetTop}px)`;
+  };
+  moveIndicator(filters[0]);
+  window.addEventListener('resize', () => moveIndicator(document.querySelector('.filter-btn.active') || filters[0]));
+
   filters.forEach((filter) => {
     filter.addEventListener('click', () => {
       const category = filter.dataset.filter;
       setButtonsState(filters, filter);
+      moveIndicator(filter);
 
       projects.forEach((project) => {
         const categories = project.dataset.category.split(' ');
@@ -199,6 +212,45 @@ const storage = {
       });
     });
   });
+})();
+
+/* === CUSTOM CURSOR === */
+(() => {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const ring = document.createElement('div'); const dot = document.createElement('div');
+  ring.className = 'cursor-ring'; dot.className = 'cursor-dot'; document.body.append(ring, dot);
+  let targetX = -100; let targetY = -100; let ringX = -100; let ringY = -100;
+  document.addEventListener('mousemove', (event) => { targetX = event.clientX; targetY = event.clientY; dot.style.left = `${targetX}px`; dot.style.top = `${targetY}px`; });
+  document.querySelectorAll('a, button, input, textarea').forEach((element) => {
+    element.dataset.cursor = 'link';
+    element.addEventListener('mouseenter', () => ring.classList.add('is-hover'));
+    element.addEventListener('mouseleave', () => ring.classList.remove('is-hover'));
+  });
+  const render = () => { ringX += (targetX - ringX) * .12; ringY += (targetY - ringY) * .12; ring.style.left = `${ringX}px`; ring.style.top = `${ringY}px`; requestAnimationFrame(render); };
+  render();
+})();
+
+/* === CONTACT COPY === */
+(() => {
+  document.querySelectorAll('.copy-contact').forEach((button) => button.addEventListener('click', async () => {
+    const original = button.textContent;
+    try { await navigator.clipboard.writeText(button.dataset.copy); button.textContent = 'Copied!'; }
+    catch { button.textContent = 'Copy failed'; }
+    window.setTimeout(() => { button.textContent = original; }, 1500);
+  }));
+})();
+
+/* === CGPA RING === */
+(() => {
+  const ring = document.querySelector('.cgpa-ring');
+  if (!ring) return;
+  if (!('IntersectionObserver' in window)) return ring.classList.add('is-visible');
+  new IntersectionObserver((entries, observer) => entries.forEach((entry) => { if (entry.isIntersecting) { ring.classList.add('is-visible'); observer.unobserve(ring); } }), { threshold: .5 }).observe(ring);
+})();
+
+/* === SERVICE WORKER === */
+(() => {
+  if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 })();
 
 /* === ACTIVE NAVIGATION === */
