@@ -1,5 +1,19 @@
 /* === VARIABLES === */
 :root {
+  --bg: #07080b;
+  --bg-2: #0d0f14;
+  --surface: #111318;
+  --surface-2: #181b22;
+  --border-active: #2a2d3d;
+  --accent-soft: rgba(91,138,240,.12);
+  --green: #3dd68c;
+  --green-soft: rgba(61,214,140,.12);
+  --text-1: #eceef4;
+  --text-2: #8b92a8;
+  --text-3: #454a5e;
+  --tab-bar-h: 64px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
   --color-bg: #08090c;
   --color-surface: #0f1117;
   --color-surface-2: #161820;
@@ -1558,15 +1572,17 @@ section[id] {
 .form-group:focus-within::after { transform: scaleX(1); }
 
 @media (max-width: 767px) {
-  body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 12px)); }
+  body { padding-bottom: calc(var(--tab-bar-h) + var(--safe-bottom)); }
+  .nav { min-height: calc(56px + var(--safe-top)); padding-top: var(--safe-top); background: color-mix(in srgb, var(--bg) 75%, transparent); backdrop-filter: blur(20px) saturate(180%); }
   .nav-links, .nav-toggle, .nav-mobile, .nav-overlay { display: none !important; }
-  .bottom-tabs { position: fixed; right: 0; bottom: 0; left: 0; z-index: 80; display: grid; grid-template-columns: repeat(5, 1fr); height: calc(64px + env(safe-area-inset-bottom, 12px)); padding-bottom: env(safe-area-inset-bottom, 12px); border-top: 1px solid color-mix(in srgb, var(--border) 75%, transparent); background: color-mix(in srgb, var(--bg-nav) 82%, transparent); backdrop-filter: blur(20px); }
+  .bottom-tabs { position: fixed; right: 0; bottom: 0; left: 0; z-index: 80; display: grid; grid-template-columns: repeat(5, 1fr); height: calc(var(--tab-bar-h) + var(--safe-bottom)); padding-bottom: var(--safe-bottom); border-top: 1px solid color-mix(in srgb, var(--border) 75%, transparent); background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(24px) saturate(180%); }
+  .tab-indicator { position: absolute; top: 0; z-index: 1; width: 24px; height: 2px; border-radius: 0 0 var(--radius-pill) var(--radius-pill); background: var(--accent); transition: transform var(--duration-base) var(--ease-spring); }
   .bottom-tabs__tab { position: relative; display: grid; place-items: center; align-content: center; gap: 2px; color: var(--text-muted); font-size: 10px; font-weight: 700; transition: color .2s ease, transform .2s cubic-bezier(.2,1.5,.4,1); }
   .bottom-tabs__tab svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; }
-  .bottom-tabs__tab::after { position: absolute; top: 0; width: 22px; height: 3px; border-radius: 0 0 3px 3px; background: var(--accent); content: ""; opacity: 0; transform: scaleX(.2); transition: .2s ease; }
+  .bottom-tabs__tab::after { display: none; }
   .bottom-tabs__tab.active { color: var(--accent); transform: translateY(-1px); }
   .bottom-tabs__tab.active svg { fill: currentColor; }
-  .bottom-tabs__tab.active::after { opacity: 1; transform: scaleX(1); }
+  .bottom-tabs__tab.active svg { stroke-width: 2.25; }
   .contact-fab { right: var(--space-lg); bottom: calc(76px + env(safe-area-inset-bottom, 12px)); }
   .scroll-top { right: var(--space-lg); bottom: calc(136px + env(safe-area-inset-bottom, 12px)); }
   .profile-card { animation: app-profile-float 3s ease-in-out infinite alternate; }

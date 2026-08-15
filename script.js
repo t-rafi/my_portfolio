@@ -375,12 +375,25 @@ document.querySelector('.contact-form')?.addEventListener('submit', handleFormSu
 (() => {
   const tabs = document.querySelectorAll('.bottom-tabs__tab');
   const sections = document.querySelectorAll('main section[id]');
+  const indicator = document.querySelector('.tab-indicator');
   if (!tabs.length || !('IntersectionObserver' in window)) return;
+  const setActive = (tab) => {
+    tabs.forEach((item) => {
+      const active = item === tab;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-selected', String(active));
+    });
+    if (indicator) indicator.style.transform = `translateX(${tab.offsetLeft + (tab.offsetWidth - indicator.offsetWidth) / 2}px)`;
+  };
   const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
     if (!entry.isIntersecting) return;
-    tabs.forEach((tab) => tab.classList.toggle('active', tab.getAttribute('href') === `#${entry.target.id}`));
+    const tab = [...tabs].find((item) => item.getAttribute('href') === `#${entry.target.id}`);
+    if (tab) setActive(tab);
   }), { rootMargin: '-35% 0px -55% 0px' });
   sections.forEach((section) => observer.observe(section));
+  tabs.forEach((tab) => tab.addEventListener('click', () => setActive(tab)));
+  window.addEventListener('resize', () => setActive(document.querySelector('.bottom-tabs__tab.active') || tabs[0]));
+  setActive(document.querySelector('.bottom-tabs__tab.active') || tabs[0]);
 })();
 
 /* === PROJECT MOBILE CAROUSEL === */
