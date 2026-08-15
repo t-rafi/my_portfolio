@@ -1,0 +1,1 @@
+"""Shared CV generation helpers."""
