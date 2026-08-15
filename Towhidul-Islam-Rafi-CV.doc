@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jaki Towhidul Islam (Rafi) — CV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── DESIGN TOKENS ── */
+    :root {
+      --accent:      #2563eb;
+      --accent-light:#eff6ff;
+      --text-1:      #0f172a;
+      --text-2:      #475569;
+      --text-3:      #94a3b8;
+      --border:      #e2e8f0;
+      --bg:          #ffffff;
+      --surface:     #f8fafc;
+      --font:        'Inter', system-ui, sans-serif;
+      --mono:        'JetBrains Mono', monospace;
+      --page-w:      210mm;
+      --page-pad:    14mm;
+    }
+
+    /* ── PAGE / PRINT ── */
+    html { background: #cbd5e1; }
+
+    body {
+      font-family: var(--font);
+      font-size: 9.5pt;
+      line-height: 1.55;
+      color: var(--text-1);
+      background: var(--bg);
+      width: var(--page-w);
+      min-height: 297mm;
+      margin: 12mm auto;
+      padding: var(--page-pad);
+      box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+    }
+
+    @page {
+      size: A4;
+      margin: 14mm;
+    }
+
+    @media print {
+      html { background: none; }
+      body { margin: 0; padding: 0; width: 100%; box-shadow: none; }
+      .no-print { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    /* ── PRINT BUTTON ── */
+    .print-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: #1e293b;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 999;
+      font-size: 13px;
+    }
+    .print-bar span { opacity: 0.7; }
+    .print-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: background 0.15s;
+    }
+    .print-btn:hover { background: #1d4ed8; }
+    .print-btn svg { width: 15px; height: 15px; }
+
+    @media screen {
+      body { margin-top: calc(12mm + 44px); }
+    }
+
+    /* ── HEADER ── */
+    .cv-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--accent);
+      margin-bottom: 14px;
+    }
+    .cv-profile-photo { width: 27mm; height: 34mm; object-fit: cover; object-position: center; border: 2px solid var(--accent); border-radius: 5px; }
+    .cv-header-main { display: flex; gap: 10px; align-items: flex-start; }
+
+    .cv-name {
+      font-size: 22pt;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-1);
+      line-height: 1.1;
+    }
+
+    .cv-name span {
+      color: var(--accent);
+    }
+
+    .cv-title {
+      font-size: 10pt;
+      font-weight: 500;
+      color: var(--text-2);
+      margin-top: 3px;
+      font-family: var(--mono);
+    }
+
+    .cv-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+      border-radius: 100px;
+      padding: 2px 8px;
+      font-size: 7.5pt;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+    .cv-status::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #16a34a;
+    }
+
+    .cv-contacts {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .cv-contact-item {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+      font-size: 8pt;
+      color: var(--text-2);
+    }
+    .cv-contact-item a { color: var(--accent); text-decoration: none; }
+    .cv-contact-icon {
+      width: 14px; height: 14px;
+      flex-shrink: 0;
+      color: var(--text-3);
+    }
+
+    /* ── TWO COLUMN LAYOUT ── */
+    .cv-body {
+      display: grid;
+      grid-template-columns: 1fr 68mm;
+      gap: 16px;
+      align-items: start;
+    }
+
+    /* ── SECTIONS ── */
+    .section { margin-bottom: 14px; }
+
+    .section-title {
+      font-size: 7.5pt;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-family: var(--mono);
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── EXPERIENCE ── */
+    .exp-item { margin-bottom: 10px; }
+    .exp-item:last-child { margin-bottom: 0; }
+
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .exp-role {
+      font-size: 9.5pt;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+
+    .exp-period {
+      font-size: 7.5pt;
+      color: var(--text-3);
+      font-family: var(--mono);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .exp-company {
+      font-size: 8.5pt;
+      font-weight: 500;
+      color: var(--accent);
+      margin-top: 1px;
+    }
+
+    .exp-type {
+      font-size: 7.5pt;
+      color: var(--text-3);
+      margin-bottom: 4px;
+    }
+
+    .exp-desc {
+      font-size: 8.5pt;
+      color: var(--text-2);
+      margin-bottom: 5px;
+      line-height: 1.5;
+    }
+
+    .exp-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .exp-bullets li {
+      font-size: 8.5pt;
+      color: var(--text-2);
+      padding-left: 10px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .exp-bullets li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 7.5pt;
+      top: 1px;
+    }
+
+    .exp-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      margin-top: 5px;
+    }
+
+    .tag {
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid #bfdbfe;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 7pt;
+      font-weight: 500;
+      font-family: var(--mono);
+    }
+
+    /* ── PROJECTS ── */
+    .project-item {
+      margin-bottom: 9px;
+      padding: 8px 9px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      border-left: 3px solid var(--accent);
+    }
+    .project-item:last-child { margin-bottom: 0; }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3px;
+    }
+
+    .project-name {
+      font-size: 9pt;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+
+    .project-badge {
+      font-size: 6.5pt;
+      font-family: var(--mono);
+      color: var(--text-3);
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 1px 6px;
+    }
+
+    .project-desc {
+      font-size: 8pt;
+      color: var(--text-2);
+      margin-bottom: 4px;
+      line-height: 1.45;
+    }
+
+    /* ── SIDEBAR SECTIONS ── */
+    .sidebar { display: flex; flex-direction: column; gap: 14px; }
+
+    /* ── SKILLS ── */
+    .skill-group { margin-bottom: 8px; }
+    .skill-group:last-child { margin-bottom: 0; }
+    .skill-group-name {
+      font-size: 8pt;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .skill-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .skill-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .skill-name {
+      font-size: 7.5pt;
+      color: var(--text-2);
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .skill-bar-wrap {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 100px;
+    }
+
+    .skill-pct {
+      font-size: 6.5pt;
+      color: var(--text-3);
+      font-family: var(--mono);
+      width: 24px;
+      text-align: right;
+    }
+
+    /* ── EDUCATION ── */
+    .edu-degree {
+      font-size: 9pt;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+    .edu-school {
+      font-size: 8pt;
+      color: var(--accent);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .edu-meta {
+      font-size: 7.5pt;
+      color: var(--text-3);
+      font-family: var(--mono);
+      margin-top: 2px;
+    }
+    .edu-cgpa {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 7.5pt;
+      font-weight: 700;
+      font-family: var(--mono);
+      margin-top: 4px;
+    }
+
+    /* ── ABOUT / SUMMARY ── */
+    .summary {
+      font-size: 8.5pt;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+    .summary strong { color: var(--text-1); font-weight: 600; }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .stat-box {
+      background: var(--accent-light);
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 6px 8px;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 13pt;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: var(--mono);
+      line-height: 1.1;
+    }
+    .stat-label {
+      font-size: 6.5pt;
+      color: var(--text-2);
+      margin-top: 1px;
+      line-height: 1.3;
+    }
+
+    /* ── CONTACT SIDEBAR ── */
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 8pt;
+    }
+    .contact-label {
+      font-size: 7pt;
+      color: var(--text-3);
+      font-family: var(--mono);
+      width: 38px;
+      flex-shrink: 0;
+    }
+    .contact-val {
+      color: var(--text-2);
+      text-decoration: none;
+    }
+    .contact-val.link { color: var(--accent); }
+
+    /* ── LEARNING ── */
+    .learn-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .learn-list li {
+      font-size: 8pt;
+      color: var(--text-2);
+      padding-left: 10px;
+      position: relative;
+      line-height: 1.45;
+    }
+    .learn-list li::before {
+      content: '·';
+      position: absolute;
+      left: 2px;
+      color: var(--accent);
+      font-size: 12pt;
+      line-height: 1;
+      top: -1px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+
+    /* ── FOOTER ── */
+    .cv-footer {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cv-footer-text {
+      font-size: 7pt;
+      color: var(--text-3);
+      font-family: var(--mono);
+    }
+    .cv-footer-url {
+      font-size: 7pt;
+      color: var(--accent);
+      font-family: var(--mono);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Print Bar (hidden on print) -->
+  <div class="print-bar no-print">
+    <span>📄 Jaki Towhidul Islam (Rafi) — CV &nbsp;·&nbsp; Save as PDF: File → Print → Save as PDF</span>
+    <button class="print-btn" onclick="window.print()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+        <rect x="6" y="14" width="12" height="8"/>
+      </svg>
+      Save as PDF
+    </button>
+  </div>
+
+  <!-- ── CV HEADER ── -->
+  <header class="cv-header">
+    <div class="cv-header-main">
+      <img class="cv-profile-photo" src="img.jpeg" alt="Portrait of Towhidul Islam Rafi">
+      <div>
+      <div class="cv-name">Jaki Towhidul Islam <span>(Rafi)</span></div>
+      <div class="cv-title">Junior Software Engineer · ASP.NET Core &amp; ERP Systems</div>
+      <div class="cv-status">Open to work · Dec 2025–Present @ iTech Velocity</div>
+      </div>
+    </div>
+    <div class="cv-contacts">
+      <div class="cv-contact-item">
+        <svg class="cv-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+        <a href="mailto:tirafi29@gmail.com">tirafi29@gmail.com</a>
+      </div>
+      <div class="cv-contact-item">
+        <svg class="cv-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.1 5.18 2 2 0 015.09 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.1 10.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        <span>+880 1540 400 287</span>
+      </div>
+      <div class="cv-contact-item">
+        <svg class="cv-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+        <a href="https://github.com/t-rafi">github.com/t-rafi</a>
+      </div>
+      <div class="cv-contact-item">
+        <svg class="cv-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        <a href="https://linkedin.com/in/t-rafi">linkedin.com/in/t-rafi</a>
+      </div>
+      <div class="cv-contact-item">
+        <svg class="cv-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Dhaka, Bangladesh</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── CV BODY ── -->
+  <div class="cv-body">
+
+    <!-- LEFT COLUMN -->
+    <main>
+
+      <!-- SUMMARY -->
+      <section class="section">
+        <div class="section-title">Professional Summary</div>
+        <p class="summary">
+          Software Engineer contributing to <strong>Clarra</strong>, a large-scale enterprise ERP platform at <strong>iTech Velocity</strong>.
+          Works across the full delivery cycle — from client requirements and application development to
+          <strong>RDLC report design</strong>, IIS deployment, and production support.
+          Part of a <strong>20+ developer team</strong> building multi-domain ERP software in <strong>ASP.NET Core and C#</strong>.
+        </p>
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-num">30+</div>
+            <div class="stat-label">RDLC Reports Built</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">20+</div>
+            <div class="stat-label">ERP Module Domains</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">20+</div>
+            <div class="stat-label">Developer Team Size</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPERIENCE -->
+      <section class="section">
+        <div class="section-title">Professional Experience</div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-role">Junior Executive, Software Development</div>
+            <div class="exp-period">Dec 2025 – Present</div>
+          </div>
+          <div class="exp-company">iTech Velocity Ltd.</div>
+          <div class="exp-type">Full-time · Software Engineer · Dhaka, Bangladesh</div>
+          <p class="exp-desc">
+            Contributing to <strong>Clarra</strong>, a large-scale proprietary enterprise ERP platform. Working as part of a 20+ developer team handling responsibilities from client requirement discussions through production deployment and support.
+          </p>
+          <ul class="exp-bullets">
+            <li>Developed and maintained <strong>30+ RDLC business reports</strong> for enterprise clients across Procurement, Sales Distribution, Finance, and HR modules.</li>
+            <li>Built REST API endpoints and application features using <strong>ASP.NET Core, C#, and Entity Framework Core</strong> with SQL Server.</li>
+            <li>Handled <strong>IIS deployment</strong>, production troubleshooting, client communication, and cross-team developer coordination.</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="tag">ASP.NET Core</span>
+            <span class="tag">C#</span>
+            <span class="tag">.NET 8</span>
+            <span class="tag">EF Core</span>
+            <span class="tag">SQL Server</span>
+            <span class="tag">RDLC Reports</span>
+            <span class="tag">REST API</span>
+            <span class="tag">IIS</span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <div class="exp-role">Web Development Intern</div>
+            <div class="exp-period">Jun 2025 – Dec 2025</div>
+          </div>
+          <div class="exp-company">Pinovation Tech Ltd.</div>
+          <div class="exp-type">Internship · 6 months · Dhaka, Bangladesh</div>
+          <p class="exp-desc">
+            Frontend web development internship focused on building responsive user interfaces and gaining practical experience with web technologies in a professional environment.
+          </p>
+          <ul class="exp-bullets">
+            <li>Developed responsive web interfaces using HTML, CSS, Bootstrap, and JavaScript.</li>
+            <li>Worked within a team development environment using Git and GitHub.</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Bootstrap</span>
+            <span class="tag">Git</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section class="section">
+        <div class="section-title">Projects</div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">Clarra ERP Platform</div>
+            <span class="project-badge">Professional · Proprietary</span>
+          </div>
+          <p class="project-desc">Large-scale private enterprise ERP spanning Accounts &amp; Finance, HCM, Sales, Engineering Operations, Supply Chain, Warehouse, Real Estate, and Manufacturing. Contributed as part of a 20+ engineer team — 30+ reports, REST endpoints, IIS deployments.</p>
+          <div class="exp-tags">
+            <span class="tag">ASP.NET Core</span><span class="tag">C#</span><span class="tag">EF Core</span><span class="tag">SQL Server</span><span class="tag">RDLC</span><span class="tag">IIS</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">Registration Form — ASP.NET Core MVC</div>
+            <span class="project-badge">Personal · github.com/t-rafi</span>
+          </div>
+          <p class="project-desc">Data-entry application built with ASP.NET Core MVC, C#, Entity Framework Core, SQL Server, and Razor Views — demonstrating full-stack .NET development.</p>
+          <div class="exp-tags">
+            <span class="tag">ASP.NET Core MVC</span><span class="tag">C#</span><span class="tag">EF Core</span><span class="tag">SQL Server</span><span class="tag">Razor</span>
+          </div>
+        </div>
+
+        <div class="project-item">
+          <div class="project-header">
+            <div class="project-name">C# Learning Journey</div>
+            <span class="project-badge">Learning · github.com/t-rafi</span>
+          </div>
+          <p class="project-desc">Tracked learning repository documenting progression from C# fundamentals to object-oriented design patterns — structured self-study alongside professional work.</p>
+          <div class="exp-tags">
+            <span class="tag">C#</span><span class="tag">.NET</span><span class="tag">OOP</span>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- SKILLS -->
+      <section class="section">
+        <div class="section-title">Technical Skills</div>
+
+        <div class="skill-group">
+          <div class="skill-group-name">Backend</div>
+          <div class="skill-list">
+            <div class="skill-row">
+              <div class="skill-name">C#</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:88%"></div></div>
+              <div class="skill-pct">88%</div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-name">ASP.NET Core</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:90%"></div></div>
+              <div class="skill-pct">90%</div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-name">EF Core</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:62%"></div></div>
+              <div class="skill-pct">62%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-name">Reporting</div>
+          <div class="skill-list">
+            <div class="skill-row">
+              <div class="skill-name">RDLC Reports</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:90%"></div></div>
+              <div class="skill-pct">90%</div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-name">Report Design</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:85%"></div></div>
+              <div class="skill-pct">85%</div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-name">SSRS</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:60%"></div></div>
+              <div class="skill-pct">60%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-name">Database</div>
+          <div class="skill-list">
+            <div class="skill-row">
+              <div class="skill-name">SQL Server</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:65%"></div></div>
+              <div class="skill-pct">65%</div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-name">EF Migrations</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:80%"></div></div>
+              <div class="skill-pct">80%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-name">Frontend</div>
+          <div class="skill-list">
+            <div class="skill-row">
+              <div class="skill-name">HTML/CSS</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:88%"></div></div>
+              <div class="skill-pct">88%</div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-name">JavaScript</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:80%"></div></div>
+              <div class="skill-pct">80%</div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-name">Razor Views</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:62%"></div></div>
+              <div class="skill-pct">62%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-name">DevOps / Tools</div>
+          <div class="skill-list">
+            <div class="skill-row">
+              <div class="skill-name">IIS</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:70%"></div></div>
+              <div class="skill-pct">70%</div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-name">Git / GitHub</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:75%"></div></div>
+              <div class="skill-pct">75%</div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-name">Redis</div>
+              <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:50%"></div></div>
+              <div class="skill-pct">50%</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EDUCATION -->
+      <section class="section">
+        <div class="section-title">Education</div>
+        <div class="edu-degree">B.Sc. in Computer Science &amp; Engineering</div>
+        <div class="edu-school">Presidency University of Bangladesh</div>
+        <div class="edu-meta">2026 – Present · In Progress</div>
+        <div class="edu-cgpa">CGPA 3.9 / 4.0</div>
+      </section>
+
+      <!-- CONTINUOUS LEARNING -->
+      <section class="section">
+        <div class="section-title">Continuous Learning</div>
+        <ul class="learn-list">
+          <li>ASP.NET Core docs &amp; Microsoft Learn — framework depth</li>
+          <li>Clean Architecture via production codebase exposure</li>
+          <li>SQL Server query optimization through ERP data work</li>
+          <li>IIS configuration &amp; production troubleshooting</li>
+        </ul>
+      </section>
+
+      <!-- LANGUAGES -->
+      <section class="section">
+        <div class="section-title">Languages</div>
+        <div class="skill-list">
+          <div class="skill-row">
+            <div class="skill-name">Bengali</div>
+            <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:100%"></div></div>
+            <div class="skill-pct">Native</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name">English</div>
+            <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:78%"></div></div>
+            <div class="skill-pct">Prof.</div>
+          </div>
+        </div>
+      </section>
+
+    </aside>
+  </div>
+
+  <!-- CV FOOTER -->
+  <footer class="cv-footer">
+    <span class="cv-footer-text">© 2025–2026 Towhidul Islam Rafi · Updated August 2026</span>
+    <a class="cv-footer-url" href="https://t-rafi.github.io">t-rafi.github.io</a>
+  </footer>
+
+</body>
+</html>

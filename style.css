@@ -1544,6 +1544,9 @@ section[id] {
 .hero-name__typing.is-complete::after { display: none; }
 .hero-reveal { opacity: 0; transform: translateY(10px); transition: opacity .45s ease, transform .45s ease; }
 .hero-reveal.is-visible { opacity: 1; transform: translateY(0); }
+.cv-formats { display: inline-flex; align-items: center; gap: var(--space-sm); color: var(--text-muted); font: 500 var(--text-xs) var(--font-mono); }
+.cv-formats a { min-height: 32px; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast); }
+.cv-formats a:hover { border-color: var(--accent); background: var(--accent-glow); color: var(--accent); }
 @keyframes type-cursor { 50% { opacity: 0; } }
 
 /* ===== BOTTOM TAB BAR ===== */
