@@ -263,3 +263,130 @@ function handleFormSubmit(event) {
 }
 
 document.querySelector('.contact-form')?.addEventListener('submit', handleFormSubmit);
+
+/* === APP HERO GREETING === */
+(() => {
+  const greeting = document.querySelector('[data-greeting]');
+  const name = document.querySelector('.hero-name__typing');
+  const reveal = document.querySelectorAll('.hero-reveal');
+  if (!greeting || !name) return;
+  const hour = new Date().getHours();
+  greeting.textContent = `${hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'}, I'm`;
+  const fullName = 'Towhidul Islam Rafi';
+  if (prefersReducedMotion.matches) {
+    name.textContent = fullName;
+    name.classList.add('is-complete');
+    reveal.forEach((element) => element.classList.add('is-visible'));
+    return;
+  }
+  let index = 0;
+  const type = () => {
+    name.textContent = fullName.slice(0, ++index);
+    if (index < fullName.length) window.setTimeout(type, 60);
+    else {
+      name.classList.add('is-complete');
+      reveal.forEach((element) => element.classList.add('is-visible'));
+    }
+  };
+  type();
+})();
+
+/* === SKILL PROGRESS BARS === */
+(() => {
+  const cards = document.querySelectorAll('.tech-card');
+  const levels = { Professional: 88, Intermediate: 62 };
+  cards.forEach((card) => {
+    card.querySelectorAll('.skill-item').forEach((item) => {
+      const level = item.querySelector('.skill-level');
+      const oldMeter = item.parentElement.querySelector(':scope > .skill-meter');
+      if (!level || item.querySelector('.skill-meter')) return;
+      const meter = oldMeter?.cloneNode(true) || document.createElement('div');
+      meter.className = 'skill-meter';
+      meter.setAttribute('aria-hidden', 'true');
+      meter.innerHTML = `<span data-skill-level="${level.textContent.trim()}"></span>`;
+      const meta = document.createElement('div');
+      meta.className = 'skill-item__meta';
+      meta.append(item.querySelector('.skill-name'), level);
+      item.append(meta, meter);
+    });
+    card.querySelector(':scope > .skill-meter')?.remove();
+  });
+  const animate = (card) => card.querySelectorAll('[data-skill-level]').forEach((bar) => { bar.style.width = `${levels[bar.dataset.skillLevel] || 62}%`; });
+  if (prefersReducedMotion.matches || !('IntersectionObserver' in window)) return cards.forEach(animate);
+  const observer = new IntersectionObserver((entries, activeObserver) => entries.forEach((entry) => {
+    if (entry.isIntersecting) { animate(entry.target); activeObserver.unobserve(entry.target); }
+  }), { threshold: .35 });
+  cards.forEach((card) => observer.observe(card));
+})();
+
+/* === MOBILE TAB NAVIGATION === */
+(() => {
+  const tabs = document.querySelectorAll('.bottom-tabs__tab');
+  const sections = document.querySelectorAll('main section[id]');
+  if (!tabs.length || !('IntersectionObserver' in window)) return;
+  const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    tabs.forEach((tab) => tab.classList.toggle('active', tab.getAttribute('href') === `#${entry.target.id}`));
+  }), { rootMargin: '-35% 0px -55% 0px' });
+  sections.forEach((section) => observer.observe(section));
+})();
+
+/* === PROJECT MOBILE CAROUSEL === */
+(() => {
+  const grid = document.querySelector('.projects-grid');
+  const dots = document.querySelector('.projects-dots');
+  const hint = document.querySelector('.projects-swipe-hint');
+  if (!grid || !dots) return;
+  const cards = [...grid.querySelectorAll('.project-card')];
+  cards.forEach((_, index) => { const dot = document.createElement('span'); dot.className = `projects-dots__dot${index === 0 ? ' active' : ''}`; dots.append(dot); });
+  const updateDots = () => {
+    const active = Math.round(grid.scrollLeft / Math.max(1, cards[0].offsetWidth + 12));
+    dots.querySelectorAll('.projects-dots__dot').forEach((dot, index) => dot.classList.toggle('active', index === active));
+  };
+  grid.addEventListener('scroll', updateDots, { passive: true });
+  window.setTimeout(() => hint?.classList.add('is-hidden'), 2000);
+})();
+
+/* === CONTACT FAB & SCROLL PROGRESS === */
+(() => {
+  const progress = document.querySelector('.read-progress');
+  const fab = document.querySelector('.contact-fab');
+  const hero = document.getElementById('hero');
+  if (!progress || !fab || !hero) return;
+  const update = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = `${max ? (window.scrollY / max) * 100 : 0}%`;
+    fab.classList.toggle('visible', window.scrollY > hero.offsetHeight * .7);
+  };
+  window.addEventListener('scroll', update, { passive: true }); update();
+  fab.addEventListener('click', () => document.getElementById('contact')?.scrollIntoView({ behavior: prefersReducedMotion.matches ? 'auto' : 'smooth' }));
+})();
+
+/* === MOBILE EXPERIENCE ACCORDION === */
+(() => {
+  const cards = document.querySelectorAll('.exp-item');
+  const mobile = window.matchMedia('(max-width: 767px)');
+  cards.forEach((card) => {
+    const chevron = document.createElement('span'); chevron.className = 'exp-chevron'; chevron.setAttribute('aria-hidden', 'true'); chevron.textContent = '›'; card.append(chevron);
+    card.addEventListener('click', (event) => { if (mobile.matches && !event.target.closest('a')) card.classList.toggle('is-expanded'); });
+  });
+})();
+
+/* === MOBILE SECTION SWIPES === */
+(() => {
+  const sections = [...document.querySelectorAll('main section[id]')];
+  const mobile = window.matchMedia('(max-width: 767px)');
+  let startX = 0; let startY = 0;
+  document.querySelector('main')?.addEventListener('touchstart', (event) => {
+    if (!mobile.matches || event.target.closest('.projects-grid')) return;
+    startX = event.changedTouches[0].clientX; startY = event.changedTouches[0].clientY;
+  }, { passive: true });
+  document.querySelector('main')?.addEventListener('touchend', (event) => {
+    if (!mobile.matches || event.target.closest('.projects-grid')) return;
+    const deltaX = event.changedTouches[0].clientX - startX; const deltaY = event.changedTouches[0].clientY - startY;
+    if (Math.abs(deltaX) < 60 || Math.abs(deltaY) > 30) return;
+    const current = sections.reduce((best, section, index) => Math.abs(section.getBoundingClientRect().top) < Math.abs(sections[best].getBoundingClientRect().top) ? index : best, 0);
+    const next = Math.max(0, Math.min(sections.length - 1, current + (deltaX < 0 ? 1 : -1)));
+    sections[next].scrollIntoView({ behavior: prefersReducedMotion.matches ? 'auto' : 'smooth' });
+  }, { passive: true });
+})();
