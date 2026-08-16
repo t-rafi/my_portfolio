@@ -455,3 +455,69 @@ document.querySelector('.contact-form')?.addEventListener('submit', handleFormSu
     sections[next].scrollIntoView({ behavior: prefersReducedMotion.matches ? 'auto' : 'smooth' });
   }, { passive: true });
 })();
+
+(function(){
+  const SB_URL='https://uvjsrhbtzgrggjuucdyo.supabase.co';
+  const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2anNyaGJ0emdyZ2dqdXVjZHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3NzU5NDIsImV4cCI6MjEwMjM1MTk0Mn0.pph1uARdG-Wk0gSyTzbUsSpcZDrboj7Ka1nNH1Dxn-E';
+  let _db=null;
+  function db(){if(!_db)_db=supabase.createClient(SB_URL,SB_KEY);return _db;}
+  window.openGuestbookModal=function(){
+    const ol=document.getElementById('gb-overlay');
+    ol.style.display='flex';document.body.style.overflow='hidden';
+    db().auth.getSession().then(({data:{session}})=>{
+      if(session?.user)showWriteView(session.user);else showSigninView();
+    });
+  };
+  window.closeGuestbookModal=function(){
+    document.getElementById('gb-overlay').style.display='none';
+    document.body.style.overflow='';
+  };
+  window.gbSignIn=function(provider){
+    db().auth.signInWithOAuth({provider,options:{redirectTo:location.href+'?gb=1'}});
+  };
+  window.gbSignOut=function(){db().auth.signOut().then(()=>showSigninView());};
+  window.gbSend=async function(){
+    const text=document.getElementById('gb-msg').value.trim();
+    const st=document.getElementById('gb-status');
+    const btn=document.getElementById('gb-send-btn');
+    if(!text){st.style.color='#f85149';st.textContent='Please write something.';return;}
+    btn.disabled=true;btn.textContent='Sending...';
+    const {data:{session}}=await db().auth.getSession();
+    if(!session){showSigninView();return;}
+    const u=session.user,meta=u.user_metadata;
+    const {error}=await db().from('guestbook').insert({
+      name:meta.full_name||meta.name||u.email?.split('@')[0]||'Anonymous',
+      email:u.email||'',message:text,
+      avatar_url:meta.avatar_url||meta.picture||null,
+      provider:u.app_metadata?.provider||'unknown',approved:false
+    });
+    btn.disabled=false;btn.textContent='Send ✓';
+    if(error){st.style.color='#f85149';st.textContent='Failed. Try again.';}
+    else{st.style.color='#3fb950';st.textContent='✓ Sent! Will appear after approval.';document.getElementById('gb-msg').value='';}
+  };
+  function showSigninView(){
+    document.getElementById('gb-signin-view').style.display='block';
+    document.getElementById('gb-write-view').style.display='none';
+  }
+  function showWriteView(user){
+    document.getElementById('gb-signin-view').style.display='none';
+    document.getElementById('gb-write-view').style.display='block';
+    const meta=user.user_metadata;
+    const name=meta.full_name||meta.name||user.email?.split('@')[0]||'User';
+    const avatar=meta.avatar_url||meta.picture||null;
+    document.getElementById('gb-user-bar').innerHTML=`${avatar?`<img src="${avatar}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`:
+    `<span style="width:32px;height:32px;border-radius:50%;background:#6c8bff;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.85rem;flex-shrink:0;">${name.charAt(0).toUpperCase()}</span>`}
+    <div><div style="color:#e6edf3;font-size:.875rem;font-weight:600;">${name}</div><div style="color:#8b949e;font-size:.75rem;">${user.email||''}</div></div>`;
+  }
+  if(location.search.includes('gb=1')){
+    window.addEventListener('load',()=>{
+      db().auth.getSession().then(({data:{session}})=>{
+        if(session?.user){openGuestbookModal();history.replaceState({},'',location.pathname);}
+      });
+    });
+  }
+  db().auth.onAuthStateChange((_,session)=>{
+    if(session?.user&&document.getElementById('gb-overlay').style.display==='flex')
+      showWriteView(session.user);
+  });
+})();
