@@ -1,0 +1,28 @@
+{
+  "username": "t-rafi",
+  "public_repos": 10,
+  "total_stars": 0,
+  "total_forks": 0,
+  "primary_languages": [
+    "C#",
+    "HTML",
+    "JavaScript"
+  ],
+  "recent_repositories": [
+    {
+      "name": "my_portfolio",
+      "description": "High-performance personal developer portfolio with custom analytics",
+      "language": "JavaScript"
+    },
+    {
+      "name": "DocWise-Medical-Billing-Software",
+      "description": "Enterprise ASP.NET Core & C# Hospital Billing ERP",
+      "language": "C#"
+    },
+    {
+      "name": "ERP-Report-Generator",
+      "description": "RDLC & SQL Server Automated Reporting Service",
+      "language": "C#"
+    }
+  ]
+}

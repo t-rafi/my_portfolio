@@ -1,0 +1,6 @@
+# robots.txt for https://t-rafi.github.io
+User-agent: *
+Allow: /
+
+# Sitemap Location
+Sitemap: https://t-rafi.github.io/sitemap.xml

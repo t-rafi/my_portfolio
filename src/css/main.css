@@ -1,0 +1,8 @@
+/* === MASTER CSS ENTRY POINT === */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap");
+
+/* Base */
+@import "./base/variables.css";
+
+/* Full Production Styles from style.css */
+@import "../../style.css";

@@ -1,0 +1,12 @@
+{
+  "name": "Towhidul Islam Rafi — Software Engineer",
+  "short_name": "Rafi",
+  "start_url": "/",
+  "display": "standalone",
+  "description": "Junior Software Engineer specializing in ASP.NET Core & ERP Systems",
+  "orientation": "portrait-primary",
+  "background_color": "#07080b",
+  "theme_color": "#5b8af0",
+  "icons": [{ "src": "img.jpeg", "sizes": "192x192", "type": "image/jpeg" }, { "src": "img.jpeg", "sizes": "512x512", "type": "image/jpeg" }],
+  "categories": ["portfolio", "developer"]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "Jaki Towhidul Islam (Rafi)",
+  "title": "Junior Software Engineer | ASP.NET Core & ERP Systems",
+  "location": "Dhaka, Bangladesh",
+  "skills": [
+    "C#",
+    "ASP.NET Core",
+    "EF Core",
+    "SQL Server",
+    "RDLC/SSRS",
+    "HTML5/CSS3",
+    "JavaScript",
+    "Razor Views",
+    "IIS",
+    "Git"
+  ],
+  "stats": [
+    "30+ RDLC Reports",
+    "20+ ERP Modules",
+    "20+ Developer Team"
+  ],
+  "experiences_count": 2,
+  "projects_count": 3,
+  "latest_company": "iTech Velocity"
+}

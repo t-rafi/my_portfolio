@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guestbook — Rafi</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --border: #334155;
+    --accent: #5b8af0;
+    --accent2: #818cf8;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --success: #34d399;
+    --danger: #f87171;
+    --google: #ea4335;
+    --linkedin: #0077b5;
+    --facebook: #1877f2;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  nav a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  nav a:hover { text-decoration: underline; }
+
+  nav h1 { font-size: 1rem; font-weight: 700; }
+
+  /* MAIN */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+  }
+
+  .page-header { text-align: center; margin-bottom: 2.5rem; }
+  .page-header h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .page-header p { color: var(--muted); font-size: 0.95rem; }
+
+  /* AUTH CARD */
+  #auth-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+
+  #auth-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  #auth-section p { color: var(--muted); font-size: 0.875rem; margin-bottom: 1.5rem; }
+
+  .oauth-btns { display: flex; flex-direction: column; gap: 0.75rem; max-width: 320px; margin: 0 auto; }
+
+  .oauth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    border: none;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    text-decoration: none;
+    color: #fff;
+  }
+
+  .oauth-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+  .oauth-btn:active { transform: translateY(0); }
+  .oauth-btn.google { background: var(--google); }
+  .oauth-btn.linkedin { background: var(--linkedin); }
+  .oauth-btn.facebook { background: var(--facebook); }
+
+  .oauth-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  /* USER BAR */
+  #user-bar {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .user-info { display: flex; align-items: center; gap: 0.75rem; }
+
+  .avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem;
+    overflow: hidden; flex-shrink: 0;
+  }
+
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .user-name { font-weight: 600; font-size: 0.9rem; }
+  .user-email { color: var(--muted); font-size: 0.775rem; }
+
+  .sign-out-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 8px;
+    padding: 0.35rem 0.85rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sign-out-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* WRITE FORM */
+  #write-form {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  #write-form h3 { font-size: 0.875rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+
+  textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.875rem 1rem;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 0.75rem;
+  }
+
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--muted); }
+
+  .form-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+
+  .char-count { font-size: 0.775rem; color: var(--muted); }
+  .char-count.warn { color: var(--danger); }
+
+  .submit-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.25rem;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .submit-btn:hover { opacity: 0.85; }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  #form-msg { font-size: 0.85rem; margin-top: 0.5rem; }
+  #form-msg.success { color: var(--success); }
+  #form-msg.error { color: var(--danger); }
+
+  /* MESSAGES */
+  #messages-section h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.25rem;
+  }
+
+  #messages-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .msg-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .msg-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+
+  .msg-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--accent2);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.875rem;
+    color: #fff; flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .msg-name { font-weight: 600; font-size: 0.9rem; }
+  .msg-meta { color: var(--muted); font-size: 0.775rem; margin-top: 0.1rem; }
+
+  .msg-provider {
+    margin-left: auto;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .provider-google { background: rgba(234,67,53,0.12); color: #ea4335; }
+  .provider-linkedin { background: rgba(0,119,181,0.12); color: #0077b5; }
+  .provider-facebook { background: rgba(24,119,242,0.12); color: #1877f2; }
+
+  .msg-text { color: var(--text); font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .pending-note {
+    background: rgba(91,138,240,0.08);
+    border: 1px solid rgba(91,138,240,0.2);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    color: var(--accent);
+    margin-top: 0.75rem;
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    nav { padding: 1rem; }
+    main { padding: 1.5rem 1rem; }
+    .page-header h2 { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <h1>✍️ Guestbook</h1>
+  <a href="https://t-rafi.github.io/my_portfolio/">← Back to Portfolio</a>
+</nav>
+
+<main>
+  <div class="page-header">
+    <h2>Leave a Message</h2>
+    <p>Sign in with your account and leave a note for Towhidul.</p>
+  </div>
+
+  <!-- AUTH -->
+  <div id="auth-section">
+    <h3>Sign in to leave a message</h3>
+    <p>Your name and profile will be shown with your message.</p>
+    <div class="oauth-btns">
+      <button class="oauth-btn google" onclick="signIn('google')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+      <button class="oauth-btn linkedin" onclick="signIn('linkedin_oidc')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        Continue with LinkedIn
+      </button>
+      <button class="oauth-btn facebook" onclick="signIn('facebook')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Continue with Facebook
+      </button>
+    </div>
+  </div>
+
+  <!-- USER BAR -->
+  <div id="user-bar">
+    <div class="user-info">
+      <div class="avatar" id="user-avatar"></div>
+      <div>
+        <div class="user-name" id="user-name"></div>
+        <div class="user-email" id="user-email"></div>
+      </div>
+    </div>
+    <button class="sign-out-btn" onclick="signOut()">Sign out</button>
+  </div>
+
+  <!-- WRITE FORM -->
+  <div id="write-form">
+    <h3>Your Message</h3>
+    <textarea id="msg-input" placeholder="Say something nice... 👋" maxlength="500" oninput="updateCount()"></textarea>
+    <div class="form-footer">
+      <span class="char-count" id="char-count">0 / 500</span>
+      <button class="submit-btn" id="submit-btn" onclick="submitMessage()">Send Message</button>
+    </div>
+    <div id="form-msg"></div>
+    <div class="pending-note" id="pending-note">✅ Your message has been submitted and will appear after approval.</div>
+  </div>
+
+  <!-- MESSAGES -->
+  <div id="messages-section">
+    <h3>Messages (<span id="msg-count">0</span>)</h3>
+    <div id="messages-list">
+      <div class="empty-state">Loading messages...</div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const SUPABASE_URL = 'https://uvjsrhbtzgrggjuucdyo.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2anNyaGJ0emdyZ2dqdXVjZHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3NzU5NDIsImV4cCI6MjEwMjM1MTk0Mn0.pph1uARdG-Wk0gSyTzbUsSpcZDrboj7Ka1nNH1Dxn-E';
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let currentUser = null;
+
+  // ── AUTH ────────────────────────────────────────────────
+  async function signIn(provider) {
+    const { error } = await db.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: 'https://t-rafi.github.io/my_portfolio/guestbook.html' }
+    });
+    if (error) alert('Sign in failed: ' + error.message);
+  }
+
+  async function signOut() {
+    await db.auth.signOut();
+    currentUser = null;
+    showAuth();
+  }
+
+  function showAuth() {
+    document.getElementById('auth-section').style.display = 'block';
+    document.getElementById('user-bar').style.display = 'none';
+    document.getElementById('write-form').style.display = 'none';
+  }
+
+  function showUser(user) {
+    document.getElementById('auth-section').style.display = 'none';
+    document.getElementById('user-bar').style.display = 'flex';
+    document.getElementById('write-form').style.display = 'block';
+
+    const meta = user.user_metadata;
+    const name = meta.full_name || meta.name || user.email?.split('@')[0] || 'User';
+    const email = user.email || '';
+    const avatar = meta.avatar_url || meta.picture || null;
+
+    document.getElementById('user-name').textContent = name;
+    document.getElementById('user-email').textContent = email;
+
+    const avatarEl = document.getElementById('user-avatar');
+    if (avatar) {
+      avatarEl.innerHTML = `<img src="${avatar}" alt="${name}">`;
+    } else {
+      avatarEl.textContent = name.charAt(0).toUpperCase();
+    }
+  }
+
+  // ── MESSAGE FORM ────────────────────────────────────────
+  function updateCount() {
+    const len = document.getElementById('msg-input').value.length;
+    const el = document.getElementById('char-count');
+    el.textContent = `${len} / 500`;
+    el.classList.toggle('warn', len > 450);
+  }
+
+  async function submitMessage() {
+    const text = document.getElementById('msg-input').value.trim();
+    if (!text) return;
+    if (!currentUser) return;
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const meta = currentUser.user_metadata;
+    const name = meta.full_name || meta.name || currentUser.email?.split('@')[0] || 'Anonymous';
+    const email = currentUser.email || '';
+    const avatar = meta.avatar_url || meta.picture || null;
+    const provider = currentUser.app_metadata?.provider || 'unknown';
+
+    const { error } = await db.from('guestbook').insert({
+      name,
+      email,
+      message: text,
+      avatar_url: avatar,
+      provider,
+      approved: false
+    });
+
+    btn.disabled = false;
+    btn.textContent = 'Send Message';
+
+    const msgEl = document.getElementById('form-msg');
+    if (error) {
+      msgEl.textContent = 'Failed to send. Try again.';
+      msgEl.className = 'error';
+    } else {
+      document.getElementById('msg-input').value = '';
+      updateCount();
+      document.getElementById('pending-note').style.display = 'block';
+      msgEl.textContent = '';
+    }
+  }
+
+  // ── LOAD MESSAGES ───────────────────────────────────────
+  function relTime(iso) {
+    const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+    if (diff < 604800) return `${Math.floor(diff/86400)}d ago`;
+    return new Date(iso).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+  }
+
+  function providerBadge(p) {
+    const map = { google: 'Google', linkedin_oidc: 'LinkedIn', facebook: 'Facebook' };
+    const cls = { google: 'provider-google', linkedin_oidc: 'provider-linkedin', facebook: 'provider-facebook' };
+    return `<span class="msg-provider ${cls[p] || ''}">${map[p] || p}</span>`;
+  }
+
+  async function loadMessages() {
+    const { data, error } = await db
+      .from('guestbook')
+      .select('*')
+      .eq('approved', true)
+      .order('created_at', { ascending: false });
+
+    const list = document.getElementById('messages-list');
+    const countEl = document.getElementById('msg-count');
+
+    if (error || !data) {
+      list.innerHTML = '<div class="empty-state">Could not load messages.</div>';
+      return;
+    }
+
+    countEl.textContent = data.length;
+
+    if (!data.length) {
+      list.innerHTML = '<div class="empty-state">No messages yet. Be the first! 👋</div>';
+      return;
+    }
+
+    list.innerHTML = data.map(m => {
+      const initials = m.name?.charAt(0)?.toUpperCase() || '?';
+      const avatarHtml = m.avatar_url
+        ? `<img src="${m.avatar_url}" alt="${m.name}" onerror="this.parentElement.textContent='${initials}'">`
+        : initials;
+      return `
+        <div class="msg-card">
+          <div class="msg-header">
+            <div class="msg-avatar">${avatarHtml}</div>
+            <div>
+              <div class="msg-name">${m.name || 'Anonymous'}</div>
+              <div class="msg-meta">${relTime(m.created_at)}</div>
+            </div>
+            ${providerBadge(m.provider)}
+          </div>
+          <div class="msg-text">${m.message.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ── INIT ────────────────────────────────────────────────
+  async function init() {
+    const { data: { session } } = await db.auth.getSession();
+    if (session?.user) {
+      currentUser = session.user;
+      showUser(currentUser);
+    } else {
+      showAuth();
+    }
+
+    db.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        currentUser = session.user;
+        showUser(currentUser);
+      } else {
+        currentUser = null;
+        showAuth();
+      }
+    });
+
+    loadMessages();
+  }
+
+  init();
+</script>
+</body>
+</html>

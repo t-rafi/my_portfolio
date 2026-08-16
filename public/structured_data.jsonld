@@ -1,0 +1,105 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://t-rafi.github.io/#person",
+      "name": "Towhidul Islam Rafi",
+      "alternateName": "Jaki Towhidul Islam (Rafi)",
+      "jobTitle": "Junior Software Engineer | ASP.NET Core & ERP Systems",
+      "url": "https://t-rafi.github.io",
+      "email": "mailto:tirafi29@gmail.com",
+      "telephone": "+880 1540 400 287",
+      "image": "https://t-rafi.github.io/assets/img/profile.jpeg",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Dhaka, Bangladesh"
+      },
+      "sameAs": [
+        "https://github.com/t-rafi",
+        "https://linkedin.com/in/t-rafi/"
+      ],
+      "knowsAbout": [
+        "C#",
+        "ASP.NET Core",
+        "EF Core",
+        "SQL Server",
+        "RDLC/SSRS",
+        "HTML5/CSS3",
+        "JavaScript",
+        "Razor Views",
+        "IIS",
+        "Git"
+      ],
+      "worksFor": {
+        "@type": "Organization",
+        "name": "iTech Velocity",
+        "roleName": "Junior Executive, Software Development"
+      },
+      "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": "Presidency University of Bangladesh",
+        "educationalLevel": "B.Sc. in Computer Science & Engineering"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://t-rafi.github.io/#website",
+      "url": "https://t-rafi.github.io",
+      "name": "Towhidul Islam Rafi — Junior Software Engineer Portfolio",
+      "description": "Software Engineer contributing to enterprise ERP software across requirements, ASP.NET Core development, RDLC reporting, IIS deployment, and production support.",
+      "author": {
+        "@id": "https://t-rafi.github.io/#person"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://t-rafi.github.io/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://t-rafi.github.io/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "About",
+          "item": "https://t-rafi.github.io/#about"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Experience",
+          "item": "https://t-rafi.github.io/#experience"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Skills",
+          "item": "https://t-rafi.github.io/#skills"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Projects",
+          "item": "https://t-rafi.github.io/#projects"
+        },
+        {
+          "@type": "ListItem",
+          "position": 6,
+          "name": "Education",
+          "item": "https://t-rafi.github.io/#education"
+        },
+        {
+          "@type": "ListItem",
+          "position": 7,
+          "name": "Contact",
+          "item": "https://t-rafi.github.io/#contact"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#08090C"/>
+  <circle cx="1050" cy="150" r="300" fill="#6C8BFF" fill-opacity="0.08"/>
+  <circle cx="150" cy="500" r="250" fill="#4ADE80" fill-opacity="0.05"/>
+  
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="#0F1117" stroke="#1E2030" stroke-width="2"/>
+  
+  <!-- Status Badge -->
+  <rect x="110" y="110" width="160" height="36" rx="18" fill="#1A2040" stroke="#6C8BFF" stroke-opacity="0.4"/>
+  <circle cx="130" cy="128" r="5" fill="#4ADE80"/>
+  <text x="145" y="133" fill="#6C8BFF" font-family="sans-serif" font-size="14" font-weight="600">Open to work</text>
+  
+  <!-- Name & Title -->
+  <text x="110" y="210" fill="#E8EAF0" font-family="sans-serif" font-size="52" font-weight="800">Jaki Towhidul Islam (Rafi)</text>
+  <text x="110" y="260" fill="#6C8BFF" font-family="sans-serif" font-size="26" font-weight="600">Junior Software Engineer | ASP.NET Core & ERP Systems</text>
+  
+  <!-- Summary -->
+  <text x="110" y="320" fill="#9299B0" font-family="sans-serif" font-size="18" font-weight="400">
+    <tspan x="110" dy="0">Specializing in enterprise ERP software, ASP.NET Core, C#, EF Core,</tspan>
+    <tspan x="110" dy="28">SQL Server, RDLC reporting, IIS deployment, and production support.</tspan>
+  </text>
+  
+  <!-- Stats Row -->
+  <g transform="translate(110, 420)">
+    <rect width="180" height="85" rx="12" fill="#161820" stroke="#1E2030"/>
+    <text x="20" y="42" fill="#E8EAF0" font-family="sans-serif" font-size="28" font-weight="800">30<tspan fill="#6C8BFF">+</tspan></text>
+    <text x="20" y="66" fill="#9299B0" font-family="sans-serif" font-size="13">RDLC Reports</text>
+    
+    <rect x="200" width="180" height="85" rx="12" fill="#161820" stroke="#1E2030"/>
+    <text x="220" y="42" fill="#E8EAF0" font-family="sans-serif" font-size="28" font-weight="800">20<tspan fill="#6C8BFF">+</tspan></text>
+    <text x="220" y="66" fill="#9299B0" font-family="sans-serif" font-size="13">ERP Domains</text>
+    
+    <rect x="400" width="180" height="85" rx="12" fill="#161820" stroke="#1E2030"/>
+    <text x="420" y="42" fill="#E8EAF0" font-family="sans-serif" font-size="28" font-weight="800">.NET</text>
+    <text x="420" y="66" fill="#9299B0" font-family="sans-serif" font-size="13">Enterprise Stack</text>
+  </g>
+  
+  <!-- Right Brand / URL -->
+  <text x="1080" y="520" text-anchor="end" fill="#6C8BFF" font-family="sans-serif" font-size="18" font-weight="700">t-rafi.github.io</text>
+</svg>
