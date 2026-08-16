@@ -8,7 +8,7 @@ export function initGuestbook() {
   if (!overlay) return;
 
   const supabaseUrl = 'https://uvjsrhbtzgrggjuucdyo.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2anNyaGZyZ2dqdXVjZHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3NzU5NDIsImV4cCI6MjEwMjM1MTk0Mn0.pph1uARdG-Wk0gSyTzbUsSpcZDrboj7Ka1nNH1Dxn-E';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2anNyaGJ0emdyZ2dqdXVjZHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3NzU5NDIsImV4cCI6MjEwMjM1MTk0Mn0.pph1uARdG-Wk0gSyTzbUsSpcZDrboj7Ka1nNH1Dxn-E';
   let client;
 
   const db = () => {
@@ -47,7 +47,10 @@ export function initGuestbook() {
       if (status) { status.style.color = '#f85149'; status.textContent = error.message; }
     }
   };
-  window.closeGuestbookModal = () => { overlay.style.display = 'none'; document.body.style.overflow = ''; };
+  window.closeGuestbookModal = () => {
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  };
   window.gbSignIn = async (provider) => {
     try { await db().auth.signInWithOAuth({ provider, options: { redirectTo: `${location.origin}${location.pathname}?gb=1` } }); }
     catch (error) { const status = document.getElementById('gb-status'); if (status) status.textContent = error.message; }
@@ -74,5 +77,6 @@ export function initGuestbook() {
     finally { button.disabled = false; button.textContent = 'Send ✓'; }
   };
   db().auth.onAuthStateChange((_event, session) => { if (session?.user && overlay.style.display === 'flex') showWriter(session.user); });
-  if (new URLSearchParams(location.search).get('gb') === '1') window.addEventListener('load', () => window.openGuestbookModal(), { once: true });
+  // [FEATURE 11] Optional guestbook sign-in prompt
+  window.openGuestbookModal();
 }

@@ -39,7 +39,10 @@ export function initGuestbook() {
       if (status) { status.style.color = '#f85149'; status.textContent = error.message; }
     }
   };
-  window.closeGuestbookModal = () => { overlay.style.display = 'none'; document.body.style.overflow = ''; };
+  window.closeGuestbookModal = () => {
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  };
   window.gbSignIn = async (provider) => {
     try { await db().auth.signInWithOAuth({ provider, options: { redirectTo: `${location.origin}${location.pathname}?gb=1` } }); }
     catch (error) { const status = document.getElementById('gb-status'); if (status) status.textContent = error.message; }
@@ -61,5 +64,6 @@ export function initGuestbook() {
     finally { button.disabled = false; button.textContent = 'Send ✓'; }
   };
   db().auth.onAuthStateChange((_event, session) => { if (session?.user && overlay.style.display === 'flex') showWriter(session.user); });
-  if (new URLSearchParams(location.search).get('gb') === '1') window.addEventListener('load', () => window.openGuestbookModal(), { once: true });
+  // [FEATURE 11] Optional guestbook sign-in prompt
+  window.openGuestbookModal();
 }
