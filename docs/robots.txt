@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://t-rafi.github.io/my_portfolio/sitemap.xml

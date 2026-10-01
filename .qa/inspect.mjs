@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const browser = await chromium.launch({channel:'chrome',headless:true});
+const page=await browser.newPage({viewport:{width:390,height:844},colorScheme:'dark'});
+page.on('pageerror',error=>console.log('ERROR',error.message));
+page.on('console',message=>{if(message.type()==='error')console.log('CONSOLE',message.text());});
+await page.goto('http://127.0.0.1:4173/my_portfolio/');
+await page.evaluate(()=>document.fonts.ready);
+await page.screenshot({path:'.qa/before-mobile.png'});
+await page.setViewportSize({width:1440,height:1000});
+await page.screenshot({path:'.qa/before-desktop.png'});
+console.log(await page.locator('img').evaluateAll(imgs=>imgs.map(i=>({src:i.currentSrc,complete:i.complete,width:i.naturalWidth}))));
+await browser.close();

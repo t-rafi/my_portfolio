@@ -48,3 +48,4 @@ __pycache__/
 /VelocityWeb/node_modules
 /Reports/Sales/SalesDistribution/SalesInvoice/SalesInvoiceReport.rdlc
 /VelocityWeb/Properties/PublishProfiles
+node_modules

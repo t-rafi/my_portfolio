@@ -1,0 +1,21 @@
+{
+  "name": "rafi-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Static portfolio for Towhidul Islam Rafi",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node scripts/test.mjs",
+    "audit": "node scripts/audit.mjs",
+    "assets": "node scripts/assets.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@fontsource-variable/inter": "5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "5.3.0",
+    "lighthouse": "13.5.0",
+    "playwright": "1.63.0",
+    "sharp": "0.35.5"
+  }
+}
