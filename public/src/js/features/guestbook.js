@@ -1,4 +1,8 @@
-/** Guestbook modal controls for the portfolio home page. */
+/**
+ * Guestbook modal controls for the portfolio home page.
+ * The modal markup lives in index.html; these global functions support its
+ * inline buttons while keeping the implementation in the module bundle.
+ */
 export function initGuestbook() {
   const overlay = document.getElementById('gb-overlay');
   if (!overlay) return;
@@ -6,6 +10,7 @@ export function initGuestbook() {
   const supabaseUrl = 'https://uvjsrhbtzgrggjuucdyo.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2anNyaGJ0emdyZ2dqdXVjZHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3NzU5NDIsImV4cCI6MjEwMjM1MTk0Mn0.pph1uARdG-Wk0gSyTzbUsSpcZDrboj7Ka1nNH1Dxn-E';
   let client;
+
   const db = () => {
     if (!window.supabase?.createClient) throw new Error('Guestbook service is unavailable.');
     client ??= window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -19,23 +24,39 @@ export function initGuestbook() {
     document.getElementById('gb-signin-view').style.display = 'none';
     document.getElementById('gb-write-view').style.display = 'block';
     const meta = user.user_metadata || {};
-    const name = meta.full_name || meta.name || user.email?.split('@')[0] || 'User';
+    const name = String(meta.full_name || meta.name || user.email?.split('@')[0] || 'User');
     const avatar = meta.avatar_url || meta.picture;
-    const avatarHtml = avatar
-      ? `<img src="${avatar}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`
-      : `<span style="width:32px;height:32px;border-radius:50%;background:#6c8bff;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.85rem;flex-shrink:0;">${name.charAt(0).toUpperCase()}</span>`;
-    document.getElementById('gb-user-bar').innerHTML = `${avatarHtml}<div><div style="color:#e6edf3;font-size:.875rem;font-weight:600;"></div><div style="color:#8b949e;font-size:.75rem;"></div></div>`;
-    const labels = document.querySelectorAll('#gb-user-bar div div');
-    labels[0].textContent = name;
-    labels[1].textContent = user.email || '';
+    const bar = document.getElementById('gb-user-bar');
+    const initial = document.createElement('span');
+    initial.style.cssText = 'width:32px;height:32px;border-radius:50%;background:#6c8bff;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.85rem;flex-shrink:0;';
+    initial.textContent = name.charAt(0).toUpperCase();
+    const avatarNode = typeof avatar === 'string' && avatar.startsWith('https:') ? document.createElement('img') : initial;
+    if (avatarNode !== initial) {
+      avatarNode.style.cssText = 'width:32px;height:32px;border-radius:50%;object-fit:cover;';
+      avatarNode.alt = `Profile photo of ${name}`;
+      avatarNode.addEventListener('error', () => avatarNode.replaceWith(initial), { once: true });
+      avatarNode.src = avatar;
+    }
+    const labels = document.createElement('div');
+    const nameLabel = document.createElement('div');
+    nameLabel.style.cssText = 'color:#e6edf3;font-size:.875rem;font-weight:600;';
+    nameLabel.textContent = name;
+    const emailLabel = document.createElement('div');
+    emailLabel.style.cssText = 'color:#8b949e;font-size:.75rem;';
+    emailLabel.textContent = user.email || '';
+    labels.append(nameLabel, emailLabel);
+    bar.replaceChildren(avatarNode, labels);
   };
+
   window.openGuestbookModal = async () => {
-    overlay.style.display = 'flex'; document.body.style.overflow = 'hidden';
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
     try {
       const { data: { session } } = await db().auth.getSession();
       session?.user ? showWriter(session.user) : showSignIn();
     } catch (error) {
-      showSignIn(); const status = document.getElementById('gb-status');
+      showSignIn();
+      const status = document.getElementById('gb-status');
       if (status) { status.style.color = '#f85149'; status.textContent = error.message; }
     }
   };
@@ -49,7 +70,9 @@ export function initGuestbook() {
   };
   window.gbSignOut = async () => { await db().auth.signOut(); showSignIn(); };
   window.gbSend = async () => {
-    const input = document.getElementById('gb-msg'), status = document.getElementById('gb-status'), button = document.getElementById('gb-send-btn');
+    const input = document.getElementById('gb-msg');
+    const status = document.getElementById('gb-status');
+    const button = document.getElementById('gb-send-btn');
     const message = input.value.trim();
     if (!message) { status.style.color = '#f85149'; status.textContent = 'Please write something.'; return; }
     button.disabled = true; button.textContent = 'Sending...';
@@ -57,13 +80,22 @@ export function initGuestbook() {
       const { data: { session } } = await db().auth.getSession();
       if (!session?.user) { showSignIn(); return; }
       const user = session.user, meta = user.user_metadata || {};
-      const { error } = await db().from('guestbook').insert({ name: meta.full_name || meta.name || user.email?.split('@')[0] || 'Anonymous', email: user.email || '', message, avatar_url: meta.avatar_url || meta.picture || null, provider: user.app_metadata?.provider || 'unknown', approved: false });
+      const { error } = await db().from('guestbook').insert({
+        name: meta.full_name || meta.name || user.email?.split('@')[0] || 'Anonymous', email: user.email || '', message,
+        avatar_url: meta.avatar_url || meta.picture || null, provider: user.app_metadata?.provider || 'unknown'
+      });
       if (error) throw error;
       status.style.color = '#3fb950'; status.textContent = '✓ Sent! It will appear after approval.'; input.value = '';
-    } catch { status.style.color = '#f85149'; status.textContent = 'Failed to send. Please try again.'; }
+    } catch (error) { status.style.color = '#f85149'; status.textContent = 'Failed to send. Please try again.'; }
     finally { button.disabled = false; button.textContent = 'Send ✓'; }
   };
-  db().auth.onAuthStateChange((_event, session) => { if (session?.user && overlay.style.display === 'flex') showWriter(session.user); });
-  // [FEATURE 11] Optional guestbook sign-in prompt
-  window.openGuestbookModal();
+  try {
+    db().auth.onAuthStateChange((_event, session) => { if (session?.user && overlay.style.display === 'flex') showWriter(session.user); });
+  } catch (_) { /* The rest of the portfolio remains available if the service is offline. */ }
+  if (new URLSearchParams(location.search).get('gb') === '1') {
+    window.openGuestbookModal();
+    const url = new URL(location.href);
+    url.searchParams.delete('gb');
+    history.replaceState(null, '', url);
+  }
 }

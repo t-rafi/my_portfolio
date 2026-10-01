@@ -1,0 +1,11 @@
+<!doctype html><meta charset="utf-8"><iframe src="/" style="width:390px;height:844px;border:0"></iframe><pre id="result"></pre>
+<script>
+document.querySelector('iframe').addEventListener('load', () => setTimeout(() => {
+  const w = document.querySelector('iframe').contentWindow;
+  const d = w.document;
+  const selectors = ['body','.hero','.hero-inner','.hero-content','.hero-name','.hero-headline','.hero-desc','.hero-actions','.hero-stats','.profile-card','#exit-intent-modal','#gb-overlay'];
+  const boxes = Object.fromEntries(selectors.map(s => {const e=d.querySelector(s),r=e?.getBoundingClientRect(),c=e&&w.getComputedStyle(e);return [s,{x:r?.x,y:r?.y,width:r?.width,right:r?.right,display:c?.display,opacity:c?.opacity}]}));
+  const overflow = [...d.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>w.innerWidth+2 && w.getComputedStyle(e).position!=='fixed').slice(0,20).map(e=>[e.tagName,e.className,e.getBoundingClientRect().right]);
+  document.getElementById('result').textContent=JSON.stringify({innerWidth:w.innerWidth,scrollWidth:d.documentElement.scrollWidth,boxes,overflow},null,2);
+},2000));
+</script>

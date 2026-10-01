@@ -1,12 +1,15 @@
 {
   "username": "t-rafi",
-  "public_repos": 10,
-  "total_stars": 0,
-  "total_forks": 0,
+  "public_repos": 12,
+  "total_stars": 5,
+  "total_forks": 2,
   "primary_languages": [
     "C#",
+    "JavaScript",
     "HTML",
-    "JavaScript"
+    "CSS",
+    "Python",
+    "T-SQL"
   ],
   "recent_repositories": [
     {

@@ -3,6 +3,7 @@ export function initAnalytics() {
 
   const SUPABASE_URL = 'https://uvjsrhbtzgrggjuucdyo.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2anNyaGJ0emdyZ2dqdXVjZHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3NzU5NDIsImV4cCI6MjEwMjM1MTk0Mn0.pph1uARdG-Wk0gSyTzbUsSpcZDrboj7Ka1nNH1Dxn-E';
+  let client;
 
   const isDev = () => ['localhost', '127.0.0.1'].includes(location.hostname);
 
@@ -50,11 +51,14 @@ export function initAnalytics() {
   };
 
   const insert = async (page) => {
-    if (!window.supabase) return;
+    if (!window.supabase?.createClient) {
+      console.warn('Analytics insert skipped: Supabase is unavailable.');
+      return;
+    }
     try {
-      const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      client ??= window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       const place = await getGeo();
-      await client.from('visits').insert({
+      const { error } = await client.from('visits').insert({
         page,
         referrer: document.referrer || 'Direct',
         country: place.country,
@@ -64,7 +68,10 @@ export function initAnalytics() {
         os: getOS(),
         session_id: getSessionId()
       });
-    } catch {}
+      if (error) console.warn('Analytics insert failed:', error);
+    } catch (error) {
+      console.warn('Analytics insert failed:', error);
+    }
   };
 
   const markOnce = (key, page) => {

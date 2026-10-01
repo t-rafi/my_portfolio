@@ -112,7 +112,7 @@ def run_pipeline():
     # 9. Sync Public Distribution Folder
     pub_dir = ROOT_DIR / "public"
     pub_dir.mkdir(parents=True, exist_ok=True)
-    for asset in ["index.html", "guestbook.html", "Dashboard.html", "manifest.json", "sw.js", "robots.txt", "sitemap.xml", "structured_data.jsonld"]:
+    for asset in ["index.html", "guestbook.html", "Dashboard.html", "manifest.json", "sw.js", "robots.txt", "sitemap.xml", "structured_data.jsonld", "style.css"]:
         src = ROOT_DIR / asset
         if src.exists():
             shutil.copy2(src, pub_dir / asset)

@@ -1,6 +1,6 @@
-# robots.txt for https://t-rafi.github.io
+# robots.txt for https://t-rafi.github.io/my_portfolio
 User-agent: *
 Allow: /
 
 # Sitemap Location
-Sitemap: https://t-rafi.github.io/sitemap.xml
+Sitemap: https://t-rafi.github.io/my_portfolio/sitemap.xml

@@ -3,14 +3,14 @@
   "@graph": [
     {
       "@type": "Person",
-      "@id": "https://t-rafi.github.io/#person",
+      "@id": "https://t-rafi.github.io/my_portfolio/#person",
       "name": "Towhidul Islam Rafi",
-      "alternateName": "Jaki Towhidul Islam (Rafi)",
-      "jobTitle": "Junior Software Engineer | ASP.NET Core & ERP Systems",
-      "url": "https://t-rafi.github.io",
+      "alternateName": "Towhidul Islam Rafi",
+      "jobTitle": "Junior Executive, Software Development",
+      "url": "https://t-rafi.github.io/my_portfolio",
       "email": "mailto:tirafi29@gmail.com",
       "telephone": "+880 1540 400 287",
-      "image": "https://t-rafi.github.io/assets/img/profile.jpeg",
+      "image": "https://t-rafi.github.io/my_portfolio/assets/img/profile.jpeg",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Dhaka, Bangladesh"
@@ -20,23 +20,31 @@
         "https://linkedin.com/in/t-rafi/"
       ],
       "knowsAbout": [
+        "C",
+        "C++",
         "C#",
-        "ASP.NET Core",
-        "EF Core",
-        "SQL Server",
-        "RDLC/SSRS",
-        "HTML5/CSS3",
         "JavaScript",
-        "Razor Views",
+        "ASP.NET Core",
+        ".NET 8",
+        "MVC",
+        "Razor Pages",
+        "EF Core",
+        "REST APIs",
+        "SQL Server",
+        "RDLC",
+        "HTML5/CSS3",
+        "Bootstrap",
+        "Git",
+        "GitHub",
         "IIS",
-        "Git"
+        "Postman"
       ],
       "worksFor": {
         "@type": "Organization",
         "name": "iTech Velocity",
         "roleName": "Junior Executive, Software Development"
       },
-      "alumniOf": {
+      "affiliation": {
         "@type": "EducationalOrganization",
         "name": "Presidency University of Bangladesh",
         "educationalLevel": "B.Sc. in Computer Science & Engineering"
@@ -44,60 +52,60 @@
     },
     {
       "@type": "WebSite",
-      "@id": "https://t-rafi.github.io/#website",
-      "url": "https://t-rafi.github.io",
-      "name": "Towhidul Islam Rafi — Junior Software Engineer Portfolio",
-      "description": "Software Engineer contributing to enterprise ERP software across requirements, ASP.NET Core development, RDLC reporting, IIS deployment, and production support.",
+      "@id": "https://t-rafi.github.io/my_portfolio/#website",
+      "url": "https://t-rafi.github.io/my_portfolio",
+      "name": "Towhidul Islam Rafi — Software Developer Portfolio",
+      "description": "CSE student and Junior Executive in Software Development at iTech Velocity, working with ASP.NET Core, C#, ERP customization, RDLC reporting, business requirements, and client support.",
       "author": {
-        "@id": "https://t-rafi.github.io/#person"
+        "@id": "https://t-rafi.github.io/my_portfolio/#person"
       },
       "inLanguage": "en"
     },
     {
       "@type": "BreadcrumbList",
-      "@id": "https://t-rafi.github.io/#breadcrumb",
+      "@id": "https://t-rafi.github.io/my_portfolio/#breadcrumb",
       "itemListElement": [
         {
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "https://t-rafi.github.io/"
+          "item": "https://t-rafi.github.io/my_portfolio/"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "About",
-          "item": "https://t-rafi.github.io/#about"
+          "item": "https://t-rafi.github.io/my_portfolio/#about"
         },
         {
           "@type": "ListItem",
           "position": 3,
           "name": "Experience",
-          "item": "https://t-rafi.github.io/#experience"
+          "item": "https://t-rafi.github.io/my_portfolio/#experience"
         },
         {
           "@type": "ListItem",
           "position": 4,
           "name": "Skills",
-          "item": "https://t-rafi.github.io/#skills"
+          "item": "https://t-rafi.github.io/my_portfolio/#skills"
         },
         {
           "@type": "ListItem",
           "position": 5,
           "name": "Projects",
-          "item": "https://t-rafi.github.io/#projects"
+          "item": "https://t-rafi.github.io/my_portfolio/#projects"
         },
         {
           "@type": "ListItem",
           "position": 6,
           "name": "Education",
-          "item": "https://t-rafi.github.io/#education"
+          "item": "https://t-rafi.github.io/my_portfolio/#education"
         },
         {
           "@type": "ListItem",
           "position": 7,
           "name": "Contact",
-          "item": "https://t-rafi.github.io/#contact"
+          "item": "https://t-rafi.github.io/my_portfolio/#contact"
         }
       ]
     }

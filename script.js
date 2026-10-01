@@ -1179,7 +1179,244 @@ document.querySelector('.contact-form')?.addEventListener('submit', handleFormSu
   if (escBtn) escBtn.addEventListener('click', closePalette);
 })();
 
+/* === AI CHATBOT (GEMINI) === */
+(() => {
+  const GEMINI_API_KEY = 'sk-or-v1-Tোর_OPENROUTER_KEY';
+  const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+  
+  const SYSTEM_PROMPT = `You are a portfolio assistant representing Towhidul Islam Rafi, a CSE student and working software developer based in Dhaka, Bangladesh.
 
+Answer recruiter and visitor questions about Rafi in first person on his behalf. Be confident, professional, and concise (2-4 sentences max per answer).
 
+About Rafi:
+- Role: Junior Executive, Software Development at iTech Velocity (full-time since Dec 14, 2025)
+- Web Development Intern at Pinovation Tech Ltd. (Aug 2025 - Present)
+- Skills: C, C++, C#, JavaScript, ASP.NET Core, .NET 8, EF Core, SQL Server, RDLC, HTML, CSS, Bootstrap, IIS, Git, GitHub
+- Built 30+ RDLC business reports for enterprise clients
+- Built 30+ responsive web interfaces during the Pinovation internship
+- Works on Clarra ERP customization, requirements, reporting, documentation, and client support
+- Education: B.Sc. CSE at Presidency University of Bangladesh, expected graduation in 2029
+- Email: tirafi29@gmail.com | GitHub: github.com/t-rafi | LinkedIn: linkedin.com/in/t-rafi
+- Open to new opportunities
+- Location: Dhaka, Bangladesh
+
+Rules:
+- Be clear that you are Rafi's portfolio assistant if asked.
+- Keep answers short and professional
+- If asked something you don't know, say "Rafi would be happy to discuss that directly — reach him at tirafi29@gmail.com"
+- Never make up experience or skills not listed above`;
+
+  const elements = {
+    trigger: document.getElementById('ai-chat-trigger'),
+    panel: document.getElementById('ai-chat-panel'),
+    close: document.getElementById('ai-chat-close'),
+    messages: document.getElementById('ai-chat-messages'),
+    suggestions: document.getElementById('ai-chat-suggestions'),
+    form: document.getElementById('ai-chat-form'),
+    input: document.getElementById('ai-chat-input'),
+    send: document.getElementById('ai-chat-send'),
+    unreadBadge: document.getElementById('ai-chat-unread')
+  };
+
+  if (!elements.trigger || !elements.panel) return;
+
+  let conversationHistory = [];
+  let isLoading = false;
+
+  const getTimeString = () => {
+    const now = new Date();
+    return now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  };
+
+  const createMessageElement = (text, role) => {
+    const div = document.createElement('div');
+    div.className = `ai-chat-message ${role === 'user' ? 'is-user' : 'is-model'}`;
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'ai-chat-bubble';
+    bubble.textContent = text;
+    
+    const time = document.createElement('div');
+    time.className = 'ai-chat-time';
+    time.textContent = getTimeString();
+    
+    div.appendChild(bubble);
+    div.appendChild(time);
+    
+    return div;
+  };
+
+  const createTypingIndicator = () => {
+    const div = document.createElement('div');
+    div.className = 'ai-chat-message is-model';
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'ai-chat-bubble';
+    
+    const typing = document.createElement('div');
+    typing.className = 'ai-chat-typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    
+    bubble.appendChild(typing);
+    div.appendChild(bubble);
+    div.id = 'ai-chat-typing-indicator';
+    
+    return div;
+  };
+
+  const scrollToBottom = () => {
+    window.requestAnimationFrame(() => {
+      elements.messages.scrollTop = elements.messages.scrollHeight;
+    });
+  };
+
+  const showSuggestions = () => {
+    elements.suggestions.removeAttribute('hidden');
+  };
+
+  const hideSuggestions = () => {
+    elements.suggestions.setAttribute('hidden', '');
+  };
+
+  const openPanel = () => {
+    elements.panel.classList.add('is-open');
+    elements.panel.setAttribute('aria-hidden', 'false');
+    elements.trigger.setAttribute('aria-expanded', 'true');
+    elements.input.focus();
+    
+    // Show suggestions if no messages
+    if (conversationHistory.length === 0) {
+      showSuggestions();
+    }
+    
+    // Hide unread badge
+    if (elements.unreadBadge) {
+      elements.unreadBadge.setAttribute('hidden', '');
+    }
+  };
+
+  const closePanel = () => {
+    elements.panel.classList.remove('is-open');
+    elements.panel.setAttribute('aria-hidden', 'true');
+    elements.trigger.setAttribute('aria-expanded', 'false');
+  };
+
+  const setLoading = (loading) => {
+    isLoading = loading;
+    elements.input.disabled = loading;
+    elements.send.disabled = loading;
+    
+    if (loading) {
+      elements.trigger.classList.add('is-loading');
+    } else {
+      elements.trigger.classList.remove('is-loading');
+      const existing = document.getElementById('ai-chat-typing-indicator');
+      if (existing) existing.remove();
+    }
+  };
+
+  const addMessageToHistory = (text, role) => {
+    conversationHistory.push({
+      role: role === 'user' ? 'user' : 'model',
+      parts: [{ text: text }]
+    });
+  };
+
+  const sendMessage = async (userMessage) => {
+    if (!userMessage.trim() || isLoading) return;
+
+    // Add user message to UI and history
+    elements.messages.appendChild(createMessageElement(userMessage, 'user'));
+    addMessageToHistory(userMessage, 'user');
+    elements.input.value = '';
+    hideSuggestions();
+    scrollToBottom();
+
+    setLoading(true);
+
+    try {
+      // Build conversation with system prompt only on first message
+      const isFirstMessage = conversationHistory.length === 1;
+      
+      const contents = conversationHistory.map((msg, i) => {
+        if (i === 0 && msg.role === 'user') {
+          return { role: 'user', parts: [{ text: SYSTEM_PROMPT + '\n\n' + msg.parts[0].text }] };
+        }
+        return { role: msg.role, parts: msg.parts };
+      });
+
+      const fetchUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+      
+      const response = await fetch(fetchUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': GEMINI_API_KEY
+        },
+        body: JSON.stringify({ contents })
+      });
+
+      const data = await response.json();
+      console.log('Gemini raw:', JSON.stringify(data));
+
+      if (!response.ok) {
+        throw new Error(`API error ${response.status}: ${data.error?.message || 'Unknown error'}`);
+      }
+
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      if (!reply) throw new Error('Empty response: ' + JSON.stringify(data));
+
+      // Add assistant message to history and UI
+      addMessageToHistory(reply, 'model');
+      
+      setLoading(false);
+      elements.messages.appendChild(createMessageElement(reply, 'model'));
+      scrollToBottom();
+
+    } catch (error) {
+      console.error('AI Chat error:', error);
+      setLoading(false);
+      
+      const errorMessage = 'Error: ' + error.message;
+      elements.messages.appendChild(createMessageElement(errorMessage, 'model'));
+      scrollToBottom();
+    }
+  };
+
+  const startNewChat = () => {
+    conversationHistory = [];
+    elements.messages.innerHTML = '';
+    
+    // Show opening message in UI only — do NOT add to history
+    const openingMessage = "Hey! I'm Rafi's AI assistant. Ask me anything about his experience, skills, or projects. 👋";
+    elements.messages.appendChild(createMessageElement(openingMessage, 'model'));
+    
+    showSuggestions();
+    scrollToBottom();
+  };
+
+  // Event Listeners
+  elements.trigger.addEventListener('click', openPanel);
+  elements.close.addEventListener('click', closePanel);
+
+  elements.form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const message = elements.input.value.trim();
+    if (message) {
+      sendMessage(message);
+    }
+  });
+
+  // Quick reply suggestions
+  elements.suggestions.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const message = e.target.textContent;
+      sendMessage(message);
+    });
+  });
+
+  startNewChat();
+
+})();
 
 

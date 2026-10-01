@@ -5,10 +5,6 @@ export function initSectionDots() {
   const dotsNav = document.getElementById('section-dots');
   if (!dotsNav) return;
 
-  const syncVisibility = () => { dotsNav.hidden = window.innerWidth < 768; };
-  syncVisibility();
-  window.addEventListener('resize', syncVisibility, { passive: true });
-
   const dots = dotsNav.querySelectorAll('.section-dot');
   const sections = document.querySelectorAll('main section[id], header[id]');
 

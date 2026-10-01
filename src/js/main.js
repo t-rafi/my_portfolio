@@ -20,28 +20,40 @@ import { initGuestbook } from './features/guestbook.js';
 import { initCounters } from './ui/counter.js';
 import { initTyping } from './ui/typing.js';
 import { initContactForm } from './ui/contact-form.js';
+import { initAiChatbot } from './ui/ai-chatbot.js';
+import { initCoverLetterTool } from './ui/cover-letter.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  const runInit = (name, init) => {
+    try {
+      Promise.resolve(init()).catch((error) => console.error(`${name} failed`, error));
+    } catch (error) {
+      console.error(`${name} failed`, error);
+    }
+  };
+
   // Core
-  initTheme();
-  initScroll();
-  initNav();
+  runInit('initTheme', initTheme);
+  runInit('initScroll', initScroll);
+  runInit('initNav', initNav);
 
   // Features
-  initAnalytics();
-  initBottomSheet();
-  initHaptic();
-  initPullRefresh();
-  initSkillBars();
-  initProjectSwipe();
-  initCommandPalette();
-  initLeadCapture();
-  initVisitorCounter();
-  initSectionDots();
-  initGuestbook();
+  runInit('initAnalytics', initAnalytics);
+  runInit('initBottomSheet', initBottomSheet);
+  runInit('initHaptic', initHaptic);
+  runInit('initPullRefresh', initPullRefresh);
+  runInit('initSkillBars', initSkillBars);
+  runInit('initProjectSwipe', initProjectSwipe);
+  runInit('initCommandPalette', initCommandPalette);
+  runInit('initLeadCapture', initLeadCapture);
+  runInit('initVisitorCounter', initVisitorCounter);
+  runInit('initSectionDots', initSectionDots);
+  runInit('initGuestbook', initGuestbook);
 
   // UI
-  initCounters();
-  initTyping();
-  initContactForm();
+  runInit('initCounters', initCounters);
+  runInit('initTyping', initTyping);
+  runInit('initContactForm', initContactForm);
+  runInit('initAiChatbot', initAiChatbot);
+  runInit('initCoverLetterTool', initCoverLetterTool);
 });

@@ -1,9 +1,9 @@
 /**
  * Service Worker — Caching & Offline PWA Engine
- * Cache Version: v3 (Modular Architecture)
+ * Cache Version: v8 (Portfolio profile update)
  */
 
-const CACHE_NAME = 'rafi-portfolio-v3';
+const CACHE_NAME = 'rafi-portfolio-v8';
 
 const PRECACHE_ASSETS = [
   './',
@@ -26,6 +26,8 @@ const PRECACHE_ASSETS = [
   './src/js/ui/counter.js',
   './src/js/ui/typing.js',
   './src/js/ui/contact-form.js',
+  './src/js/ui/ai-chatbot.js',
+  './src/js/ui/cover-letter.js',
   './assets/img/profile.jpeg',
   './img.jpeg',
   './manifest.json'

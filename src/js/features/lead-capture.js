@@ -4,6 +4,12 @@
 export function initLeadCapture() {
   const SUPABASE_URL = 'https://uvjsrhbtzgrggjuucdyo.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2anNyaGJ0emdyZ2dqdXVjZHlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3NzU5NDIsImV4cCI6MjEwMjM1MTk0Mn0.pph1uARdG-Wk0gSyTzbUsSpcZDrboj7Ka1nNH1Dxn-E';
+  let client;
+  const db = () => {
+    if (!window.supabase?.createClient) throw new Error('Lead service is unavailable.');
+    client ??= window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    return client;
+  };
 
   const exitModal = document.getElementById('exit-intent-modal');
   const cvModal = document.getElementById('cv-lead-modal');
@@ -17,22 +23,15 @@ export function initLeadCapture() {
     const sessionId = sessionStorage.getItem('_sid') || crypto.randomUUID();
     sessionStorage.setItem('_sid', sessionId);
 
-    if (window.supabase) {
-      try {
-        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        await client.from('leads').insert({
-          session_id: sessionId,
-          name,
-          email,
-          company: company || null,
-          source,
-          page_url: location.href
-        });
-        await client.from('visits').update({ lead_name: name, lead_email: email }).eq('session_id', sessionId);
-      } catch (err) {
-        console.warn('Lead sync skipped:', err);
-      }
-    }
+    const { error } = await db().from('leads').insert({
+      session_id: sessionId,
+      name,
+      email,
+      company: company || null,
+      source,
+      page_url: location.href
+    });
+    if (error) throw error;
     localStorage.setItem('rafi_lead_collected', '1');
   };
 
@@ -58,10 +57,15 @@ export function initLeadCapture() {
     const email = document.getElementById('exit-email').value.trim();
     if (!name || !email) return;
 
-    await submitLeadToSupabase({ name, email, source: 'exit_intent' });
     const status = document.getElementById('exit-status');
-    if (status) { status.textContent = `Thanks ${name}! I'll reach out soon 🙌`; status.className = 'lead-status is-success'; }
-    window.setTimeout(() => window.closeExitIntentModal(), 1500);
+    try {
+      await submitLeadToSupabase({ name, email, source: 'exit_intent' });
+      if (status) { status.textContent = `Thanks ${name}! I'll reach out soon 🙌`; status.className = 'lead-status is-success'; }
+      window.setTimeout(() => window.closeExitIntentModal(), 1500);
+    } catch (error) {
+      console.warn('Lead submission failed:', error);
+      if (status) { status.textContent = 'Could not send your details. Please try again.'; status.className = 'lead-status is-error'; }
+    }
   };
 
   window.handleCvLeadSubmit = async (e) => {
@@ -71,8 +75,24 @@ export function initLeadCapture() {
     const company = document.getElementById('cv-lead-company')?.value.trim() || '';
     if (!name || !email) return;
 
-    await submitLeadToSupabase({ name, email, company, source: 'cv_download' });
     const status = document.getElementById('cv-lead-status');
+    try {
+      await submitLeadToSupabase({ name, email, company, source: 'cv_download' });
+    } catch (error) {
+      console.warn('Lead submission failed:', error);
+      if (status) {
+        status.className = 'lead-status is-error';
+        const message = document.createElement('span');
+        message.textContent = 'Could not send your details. Please try again, or ';
+        const fallback = document.createElement('a');
+        fallback.href = pendingDownloadHref;
+        fallback.download = pendingDownloadName;
+        fallback.textContent = 'Download anyway';
+        fallback.style.textDecoration = 'underline';
+        status.replaceChildren(message, fallback);
+      }
+      return;
+    }
     if (status) { status.textContent = `✓ Thanks ${name}! Downloading your CV now...`; status.className = 'lead-status is-success'; }
 
     const link = document.createElement('a');

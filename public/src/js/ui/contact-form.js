@@ -6,9 +6,8 @@ export function initContactForm() {
   if (!form) return;
 
   const EMAILJS_SERVICE_ID = 'service_41k41v6';
-  const EMAILJS_PUBLIC_KEY = 'YOUR_NEW_PUBLIC_KEY';
-  // Get from emailjs.com → Email Templates
-  const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+  const EMAILJS_PUBLIC_KEY = 'M5BLJwobTG7DtFnWI';
+  const EMAILJS_TEMPLATE_ID = 'template_portfolio';
 
   if (window.emailjs && typeof window.emailjs.init === 'function') {
     try {

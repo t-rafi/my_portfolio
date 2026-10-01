@@ -37,7 +37,7 @@ def generate_readme(cv: CVData = CV_DATA, output_path: str = "README.md") -> str
         "ASP.NET Core": "https://img.shields.io/badge/ASP.NET_Core-512BD4?style=for-the-badge&logo=dotnet&logoColor=white",
         "EF Core": "https://img.shields.io/badge/EF_Core-512BD4?style=for-the-badge&logo=dotnet&logoColor=white",
         "SQL Server": "https://img.shields.io/badge/Microsoft%20SQL%20Server-CC292B?style=for-the-badge&logo=microsoftsqlserver&logoColor=white",
-        "RDLC/SSRS": "https://img.shields.io/badge/RDLC%20%2F%20SSRS-0078D4?style=for-the-badge&logo=microsoft&logoColor=white",
+        "RDLC": "https://img.shields.io/badge/RDLC-0078D4?style=for-the-badge&logo=microsoft&logoColor=white",
         "HTML5/CSS3": "https://img.shields.io/badge/HTML5%20%2F%20CSS3-E34F26?style=for-the-badge&logo=html5&logoColor=white",
         "JavaScript": "https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black",
         "Razor Views": "https://img.shields.io/badge/Razor_Views-512BD4?style=for-the-badge&logo=dotnet&logoColor=white",
@@ -82,23 +82,27 @@ def generate_readme(cv: CVData = CV_DATA, output_path: str = "README.md") -> str
 
     # Contact items
     contact = cv.contact
-    contact_md = f"""- 🌐 **Portfolio**: [t-rafi.github.io](https://t-rafi.github.io/)
+    contact_md = f"""- 🌐 **Portfolio**: [t-rafi.github.io/my_portfolio](https://t-rafi.github.io/my_portfolio/)
 - 📧 **Email**: [{contact.email}](mailto:{contact.email})
 - 💼 **LinkedIn**: [{contact.linkedin}](https://{contact.linkedin})
 - 🐙 **GitHub**: [{contact.github}](https://{contact.github})
 - 📍 **Location**: {contact.location}
 """
 
-    typing_query = "lines=Junior+Software+Engineer;ASP.NET+Core+%26+ERP+Systems;Enterprise+Software+Developer&center=true&width=500&height=50&color=6C8BFF"
+    typing_query = "lines=CSE+Student+%7C+Software+Developer;ASP.NET+Core+%26+ERP+Systems;Business+Applications+%26+RDLC&center=true&width=500&height=50&color=6C8BFF"
+
+    education_detail = f"{cv.education.institution} ({cv.education.period}) — {cv.education.status}"
+    if cv.education.gpa:
+        education_detail += f" · CGPA: {cv.education.gpa}"
 
     readme_content = f"""<div align="center">
 
 # Hi there, I'm {contact.name.split(' ')[-1].strip('()')} 👋
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?{typing_query})](https://t-rafi.github.io)
+[![Typing SVG](https://readme-typing-svg.demolab.com?{typing_query})](https://t-rafi.github.io/my_portfolio/)
 
 <p align="center">
-  <a href="https://t-rafi.github.io"><img src="https://img.shields.io/badge/Portfolio-Live_Site-6c8bff?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio"></a>
+  <a href="https://t-rafi.github.io/my_portfolio/"><img src="https://img.shields.io/badge/Portfolio-Live_Site-6c8bff?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio"></a>
   <a href="https://{contact.linkedin}"><img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
   <a href="mailto:{contact.email}"><img src="https://img.shields.io/badge/Email-Contact_Me-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>
 </p>
@@ -140,7 +144,7 @@ def generate_readme(cv: CVData = CV_DATA, output_path: str = "README.md") -> str
 
 ### 🎓 Academic Background
 - **{cv.education.degree}**
-- {cv.education.institution} ({cv.education.period}) — **CGPA: {cv.education.gpa}** ({cv.education.status})
+- {education_detail}
 
 ---
 
@@ -160,7 +164,7 @@ def generate_readme(cv: CVData = CV_DATA, output_path: str = "README.md") -> str
 
 
 # [FEATURE P2] Sitemap & Robots.txt Generator
-def generate_sitemap(base_url: str = "https://t-rafi.github.io/", output_path: str = "sitemap.xml") -> str:
+def generate_sitemap(base_url: str = "https://t-rafi.github.io/my_portfolio/", output_path: str = "sitemap.xml") -> str:
     """
     Generates sitemap.xml for the portfolio including all main section anchors
     with proper change frequency and priority settings.
@@ -173,9 +177,11 @@ def generate_sitemap(base_url: str = "https://t-rafi.github.io/", output_path: s
         {"path": "/", "changefreq": "weekly", "priority": "1.0"},
         {"path": "/#about", "changefreq": "monthly", "priority": "0.8"},
         {"path": "/#experience", "changefreq": "monthly", "priority": "0.9"},
+        {"path": "/#erp", "changefreq": "monthly", "priority": "0.8"},
         {"path": "/#skills", "changefreq": "monthly", "priority": "0.8"},
         {"path": "/#projects", "changefreq": "weekly", "priority": "0.9"},
         {"path": "/#education", "changefreq": "yearly", "priority": "0.7"},
+        {"path": "/#cover-letter-tool", "changefreq": "monthly", "priority": "0.6"},
         {"path": "/#contact", "changefreq": "monthly", "priority": "0.8"},
         {"path": "/guestbook.html", "changefreq": "daily", "priority": "0.6"},
     ]
@@ -204,7 +210,7 @@ def generate_sitemap(base_url: str = "https://t-rafi.github.io/", output_path: s
     return sitemap_xml
 
 
-def generate_robots(base_url: str = "https://t-rafi.github.io/", output_path: str = "robots.txt") -> str:
+def generate_robots(base_url: str = "https://t-rafi.github.io/my_portfolio/", output_path: str = "robots.txt") -> str:
     """
     Generates robots.txt granting full access to search crawlers
     and declaring the sitemap location.
@@ -226,7 +232,7 @@ Sitemap: {base}/sitemap.xml
 
 
 # [FEATURE P3] Structured Data JSON-LD Generator
-def generate_jsonld(cv: CVData = CV_DATA, output_path: str = "structured_data.jsonld", base_url: str = "https://t-rafi.github.io/") -> str:
+def generate_jsonld(cv: CVData = CV_DATA, output_path: str = "structured_data.jsonld", base_url: str = "https://t-rafi.github.io/my_portfolio/") -> str:
     """
     Generates complete Schema.org Person, WebSite, and BreadcrumbList JSON-LD structured data.
     """
@@ -242,7 +248,7 @@ def generate_jsonld(cv: CVData = CV_DATA, output_path: str = "structured_data.js
                 "@id": f"{base}/#person",
                 "name": "Towhidul Islam Rafi",
                 "alternateName": cv.contact.name,
-                "jobTitle": cv.contact.title,
+                "jobTitle": cv.experiences[0].role,
                 "url": base,
                 "email": f"mailto:{cv.contact.email}",
                 "telephone": cv.contact.phone,
@@ -259,9 +265,9 @@ def generate_jsonld(cv: CVData = CV_DATA, output_path: str = "structured_data.js
                 "worksFor": {
                     "@type": "Organization",
                     "name": cv.experiences[0].company if cv.experiences else "iTech Velocity",
-                    "roleName": cv.experiences[0].role if cv.experiences else "Junior Software Engineer"
+                    "roleName": cv.experiences[0].role if cv.experiences else "Software Development"
                 },
-                "alumniOf": {
+                "affiliation": {
                     "@type": "EducationalOrganization",
                     "name": cv.education.institution,
                     "educationalLevel": cv.education.degree
@@ -271,7 +277,7 @@ def generate_jsonld(cv: CVData = CV_DATA, output_path: str = "structured_data.js
                 "@type": "WebSite",
                 "@id": f"{base}/#website",
                 "url": base,
-                "name": "Towhidul Islam Rafi — Junior Software Engineer Portfolio",
+                "name": "Towhidul Islam Rafi — Software Developer Portfolio",
                 "description": cv.summary,
                 "author": {
                     "@id": f"{base}/#person"
@@ -307,5 +313,3 @@ if __name__ == "__main__":
     generate_sitemap()
     generate_robots()
     generate_jsonld()
-
-

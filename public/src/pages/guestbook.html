@@ -381,8 +381,8 @@
     document.getElementById('user-bar').style.display = 'flex';
     document.getElementById('write-form').style.display = 'block';
 
-    const meta = user.user_metadata;
-    const name = meta.full_name || meta.name || user.email?.split('@')[0] || 'User';
+    const meta = user.user_metadata || {};
+    const name = String(meta.full_name || meta.name || user.email?.split('@')[0] || 'User');
     const email = user.email || '';
     const avatar = meta.avatar_url || meta.picture || null;
 
@@ -390,10 +390,14 @@
     document.getElementById('user-email').textContent = email;
 
     const avatarEl = document.getElementById('user-avatar');
-    if (avatar) {
-      avatarEl.innerHTML = `<img src="${avatar}" alt="${name}">`;
-    } else {
-      avatarEl.textContent = name.charAt(0).toUpperCase();
+    const initial = name.charAt(0).toUpperCase();
+    avatarEl.textContent = initial;
+    if (typeof avatar === 'string' && avatar.startsWith('https:')) {
+      const image = document.createElement('img');
+      image.alt = `Profile photo of ${name}`;
+      image.addEventListener('error', () => { avatarEl.textContent = initial; }, { once: true });
+      image.src = avatar;
+      avatarEl.replaceChildren(image);
     }
   }
 
@@ -414,20 +418,24 @@
     btn.disabled = true;
     btn.textContent = 'Sending...';
 
-    const meta = currentUser.user_metadata;
+    const meta = currentUser.user_metadata || {};
     const name = meta.full_name || meta.name || currentUser.email?.split('@')[0] || 'Anonymous';
     const email = currentUser.email || '';
     const avatar = meta.avatar_url || meta.picture || null;
     const provider = currentUser.app_metadata?.provider || 'unknown';
 
-    const { error } = await db.from('guestbook').insert({
-      name,
-      email,
-      message: text,
-      avatar_url: avatar,
-      provider,
-      approved: false
-    });
+    let error;
+    try {
+      ({ error } = await db.from('guestbook').insert({
+        name,
+        email,
+        message: text,
+        avatar_url: avatar,
+        provider
+      }));
+    } catch (caught) {
+      error = caught;
+    }
 
     btn.disabled = false;
     btn.textContent = 'Send Message';
@@ -457,50 +465,72 @@
   function providerBadge(p) {
     const map = { google: 'Google', linkedin_oidc: 'LinkedIn', facebook: 'Facebook' };
     const cls = { google: 'provider-google', linkedin_oidc: 'provider-linkedin', facebook: 'provider-facebook' };
-    return `<span class="msg-provider ${cls[p] || ''}">${map[p] || p}</span>`;
+    const badge = document.createElement('span');
+    badge.className = `msg-provider ${cls[p] || ''}`;
+    badge.textContent = map[p] || p || '';
+    return badge;
   }
 
   async function loadMessages() {
     const { data, error } = await db
-      .from('guestbook')
-      .select('*')
-      .eq('approved', true)
+      .from('guestbook_public')
+      .select('id,name,message,avatar_url,provider,created_at')
       .order('created_at', { ascending: false });
 
     const list = document.getElementById('messages-list');
     const countEl = document.getElementById('msg-count');
 
     if (error || !data) {
-      list.innerHTML = '<div class="empty-state">Could not load messages.</div>';
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.textContent = 'Could not load messages.';
+      list.replaceChildren(empty);
       return;
     }
 
     countEl.textContent = data.length;
 
     if (!data.length) {
-      list.innerHTML = '<div class="empty-state">No messages yet. Be the first! 👋</div>';
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.textContent = 'No messages yet. Be the first! 👋';
+      list.replaceChildren(empty);
       return;
     }
 
-    list.innerHTML = data.map(m => {
-      const initials = m.name?.charAt(0)?.toUpperCase() || '?';
-      const avatarHtml = m.avatar_url
-        ? `<img src="${m.avatar_url}" alt="${m.name}" onerror="this.parentElement.textContent='${initials}'">`
-        : initials;
-      return `
-        <div class="msg-card">
-          <div class="msg-header">
-            <div class="msg-avatar">${avatarHtml}</div>
-            <div>
-              <div class="msg-name">${m.name || 'Anonymous'}</div>
-              <div class="msg-meta">${relTime(m.created_at)}</div>
-            </div>
-            ${providerBadge(m.provider)}
-          </div>
-          <div class="msg-text">${m.message.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-        </div>
-      `;
-    }).join('');
+    const cards = data.map((m) => {
+      const name = String(m.name || 'Anonymous');
+      const initial = name.charAt(0).toUpperCase() || '?';
+      const card = document.createElement('div');
+      card.className = 'msg-card';
+      const header = document.createElement('div');
+      header.className = 'msg-header';
+      const avatar = document.createElement('div');
+      avatar.className = 'msg-avatar';
+      avatar.textContent = initial;
+      if (typeof m.avatar_url === 'string' && m.avatar_url.startsWith('https:')) {
+        const image = document.createElement('img');
+        image.alt = `Profile photo of ${name}`;
+        image.addEventListener('error', () => { avatar.textContent = initial; }, { once: true });
+        image.src = m.avatar_url;
+        avatar.replaceChildren(image);
+      }
+      const identity = document.createElement('div');
+      const nameEl = document.createElement('div');
+      nameEl.className = 'msg-name';
+      nameEl.textContent = name;
+      const time = document.createElement('div');
+      time.className = 'msg-meta';
+      time.textContent = relTime(m.created_at);
+      identity.append(nameEl, time);
+      header.append(avatar, identity, providerBadge(m.provider));
+      const message = document.createElement('div');
+      message.className = 'msg-text';
+      message.textContent = m.message || '';
+      card.append(header, message);
+      return card;
+    });
+    list.replaceChildren(...cards);
   }
 
   // ── INIT ────────────────────────────────────────────────
