@@ -1,90 +1,93 @@
-<div align="center">
+# Towhidul Islam Rafi's portfolio
 
-# Hi there, I'm Rafi 👋
+A static portfolio for a Junior Software Engineer working with ASP.NET Core and enterprise ERP in Bangladesh. The new site is in `docs/`, with a home page and two sanitized Clarra ERP case studies.
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?lines=CSE+Student+%7C+Software+Developer;ASP.NET+Core+%26+ERP+Systems;Business+Applications+%26+RDLC&center=true&width=500&height=50&color=6C8BFF)](https://t-rafi.github.io/my_portfolio/)
+The root site, `src/`, `public/` and the existing Python tools remain while the agreed critical-fix and Python phases are handled separately. `docs/` becomes the published site after the GitHub Pages source is configured.
 
-<p align="center">
-  <a href="https://t-rafi.github.io/my_portfolio/"><img src="https://img.shields.io/badge/Portfolio-Live_Site-6c8bff?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Portfolio"></a>
-  <a href="https://linkedin.com/in/t-rafi/"><img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
-  <a href="mailto:tirafi29@gmail.com"><img src="https://img.shields.io/badge/Email-Contact_Me-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>
-</p>
+## Preview
 
-</div>
+Use Node.js 22 or later:
 
----
+```sh
+npm ci
+npm start
+```
 
-### 🚀 About Me
-CSE student and Junior Executive in Software Development at iTech Velocity, working with ASP.NET Core, C#, ERP customization, RDLC reporting, business requirements, and client support.
+Open **http://127.0.0.1:4173/my_portfolio/**. The checked-in site needs no build step.
 
-🔭 **Currently working at**: **iTech Velocity** as *Junior Executive, Software Development* (Dec 14, 2025 - Present)
-> Contributing to Clarra ERP through development, reporting, documentation, and client support.
+## Design and behavior
 
----
+- Mobile navigation keeps Profile, Work, Experience and Contact within reach. It hides while a form field has focus.
+- Project navigation shows the current project. Native disclosures make details compact on phones and remain usable without JavaScript.
+- Report and diagram previews open on request, support zoom and Escape, and return focus when closed. Without JavaScript, the same links open the image.
+- The theme follows the system before paint and remembers an explicit selection.
+- The CV is a direct PDF download. Contact supports copying the email address and sending through the existing EmailJS account.
 
-### 🛠️ Tech Stack & Skills
-<div align="center">
+The report motif, portrait, typography and asymmetric sections are the main visual elements. Illustrations use dummy data and are labeled. The site uses self-hosted Inter and Plus Jakarta Sans, one blue accent, an 8px spacing scale, and short motion with reduced-motion support. There is no analytics, visitor database, lead gate or browser AI in the new site.
 
-![C](https://img.shields.io/badge/C-6c8bff?style=for-the-badge) ![C++](https://img.shields.io/badge/C++-6c8bff?style=for-the-badge) ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) ![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-512BD4?style=for-the-badge&logo=dotnet&logoColor=white) ![.NET 8](https://img.shields.io/badge/.NET%208-6c8bff?style=for-the-badge) ![MVC](https://img.shields.io/badge/MVC-6c8bff?style=for-the-badge) ![Razor Pages](https://img.shields.io/badge/Razor%20Pages-6c8bff?style=for-the-badge) ![EF Core](https://img.shields.io/badge/EF_Core-512BD4?style=for-the-badge&logo=dotnet&logoColor=white) ![REST APIs](https://img.shields.io/badge/REST%20APIs-6c8bff?style=for-the-badge) ![SQL Server](https://img.shields.io/badge/Microsoft%20SQL%20Server-CC292B?style=for-the-badge&logo=microsoftsqlserver&logoColor=white) ![RDLC](https://img.shields.io/badge/RDLC-0078D4?style=for-the-badge&logo=microsoft&logoColor=white) ![HTML5/CSS3](https://img.shields.io/badge/HTML5%20%2F%20CSS3-E34F26?style=for-the-badge&logo=html5&logoColor=white) ![Bootstrap](https://img.shields.io/badge/Bootstrap-6c8bff?style=for-the-badge) ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white) ![GitHub](https://img.shields.io/badge/GitHub-6c8bff?style=for-the-badge) ![IIS](https://img.shields.io/badge/IIS-0078D4?style=for-the-badge&logo=windows&logoColor=white) ![Postman](https://img.shields.io/badge/Postman-6c8bff?style=for-the-badge)
+## Edit
 
-</div>
+| File | Purpose |
+|---|---|
+| `docs/index.html` | Profile, work, experience, skills and contact |
+| `docs/work/rdlc-reporting.html` | Reporting case study |
+| `docs/work/erp-api.html` | API and delivery case study |
+| `docs/assets/css/tokens.css` | Fonts, themes and design tokens |
+| `docs/assets/css/site.css` | Layout and components |
+| `docs/assets/js/site.js` | Theme, navigation, previews and EmailJS |
+| `source/` | Portrait, illustrative artwork and CV source |
 
----
+To regenerate responsive images and subset fonts:
 
-### 📊 Production Highlights
-| Metric | Highlights |
-| :--- | :--- |
-| **30+** | RDLC Reports |
-| **30+** | Responsive Interfaces |
-| **ERP** | Business Applications |
+```sh
+python -m pip install -r scripts/requirements-fonts.txt
+npm run assets
+```
 
+Font licenses are included beside the WOFF2 files. Fonts contain Latin characters and punctuation; other scripts use browser fallback fonts. Keep the inline theme script and its CSP hash in agreement when changing that bootstrap.
 
----
+The original Python generators are outside the new publishing path and contain outdated content. Some overwrite the root README and assets. Their consolidation is a separate phase. Python is confirmed as build-time tooling; there is no Python API.
 
-### 💼 Experience Timeline
-### 💼 Junior Executive, Software Development · **iTech Velocity**
-*Dec 14, 2025 - Present*
+## Contact and privacy
 
-Contributing to Clarra ERP through development, reporting, documentation, and client support.
+The form uses the existing EmailJS service, template and public key. There is no private API key in browser code. A honeypot, input limits, minimum completion time, retry delay and timeout handle basic abuse and failures. Account-level origin restrictions and CAPTCHA must be configured in EmailJS; browser checks are not a server rate limiter.
 
-- Designed and customized 30+ RDLC reports with dynamic data binding and print-ready layouts.
-- Worked on ASP.NET Core and C# ERP customization based on business requirements.
-- Prepared user guidance, investigated issues, and coordinated with technical teams.
+A failure preserves the message and displays retry/email options. The email link opens the visitor's mail application; it does not claim to send automatically. The site explains that form data goes through EmailJS to Rafi's inbox.
 
-### 💼 Web Development Intern · **Pinovation Tech Ltd.**
-*Aug 2025 - Present*
+Tests mock EmailJS and send no real email. The owner still needs to verify delivery using the existing account/template.
 
-Built responsive interfaces in a professional software environment.
+## Validate
 
-- Built 30+ responsive interfaces with HTML, CSS, Bootstrap, and JavaScript.
-- Worked with Git and GitHub.
+Keep the preview server running, then run:
 
+```sh
+npm test
+npm run audit
+```
 
+Tests use an installed Google Chrome, Playwright and axe. They cover 360/768/1280/1920px in both themes, keyboard access, dialogs, project disclosures, theme persistence, direct CV access, mocked contact errors/success, no-JavaScript content and local links.
 
----
+Lighthouse runs against all three content pages with its mobile configuration. Reports are written to `.qa/`. See [DESIGN-VALIDATION.md](DESIGN-VALIDATION.md) for measured results. Set `CHROME_PATH` for Lighthouse if Chrome is installed elsewhere, or `TEST_URL` to check another running preview.
 
-### 📂 Featured Projects
-- **Clarra ERP Platform**: Proprietary enterprise ERP platform.
-- **Registration Form - ASP.NET Core MVC**: Data-entry application using ASP.NET Core MVC, C#, EF Core, SQL Server, and Razor Views.
-- **C# Learning Journey**: Tracked learning repository covering C# fundamentals and OOP.
+## Deploy to GitHub Pages
 
+1. Commit reviewed `docs/` files and push the intended branch.
+2. Open repository **Settings → Pages**.
+3. Select **Deploy from a branch → main → /docs**.
+4. Check **https://t-rafi.github.io/my_portfolio/** after deployment.
+5. Test case-study links, direct CV download, theme selection and a real form submission.
 
----
+Canonical/OG URLs and the sitemap use that exact project URL. The sitemap has no fragments. The 404 links use `/my_portfolio/`. No custom domain is configured. Update canonical/OG/sitemap/robots paths together if adding one.
 
-### 🎓 Academic Background
-- **B.Sc. in Computer Science & Engineering**
-- Presidency University of Bangladesh (Expected graduation: 2029) — In Progress
+The local commands do not deploy the site or execute Supabase migrations. Repeat the audits against the published URL after deployment.
 
----
+## Content TODOs
 
-### 📬 Connect With Me
-- 🌐 **Portfolio**: [t-rafi.github.io/my_portfolio](https://t-rafi.github.io/my_portfolio/)
-- 📧 **Email**: [tirafi29@gmail.com](mailto:tirafi29@gmail.com)
-- 💼 **LinkedIn**: [linkedin.com/in/t-rafi/](https://linkedin.com/in/t-rafi/)
-- 🐙 **GitHub**: [github.com/t-rafi](https://github.com/t-rafi)
-- 📍 **Location**: Dhaka, Bangladesh
+- One approved report example: requirement, decisions, difficult issue and verifiable result.
+- One approved API/module example: precise contribution, decisions, testing/deployment details and verifiable result.
+- Sanitized production screenshots with permission to publish, if available.
+- A typical response-time expectation for contact.
+- Specific internship outcomes, if you want more than the confirmed role and dates shown.
+- The Python build-tool scope for its separate consolidation phase.
 
-
-<div align="center">
-  <sub>Built with ❤️ and auto-generated from <code>cv_data.py</code></sub>
-</div>
+Case-study TODOs are visible on the pages. No business impact, uptime or availability claim is inferred.

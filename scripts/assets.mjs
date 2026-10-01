@@ -1,5 +1,6 @@
 import sharp from 'sharp';
 import { mkdir, copyFile, writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 
 const output = new URL('../docs/assets/images/', import.meta.url);
 await mkdir(output, { recursive: true });
@@ -11,6 +12,7 @@ for (const [packageName, filename, outputName] of [
   await copyFile(`node_modules/@fontsource-variable/${packageName}/files/${filename}`, new URL(`../docs/assets/fonts/${outputName}`, import.meta.url));
   await copyFile(`node_modules/@fontsource-variable/${packageName}/LICENSE`, new URL(`../docs/assets/fonts/${packageName}-LICENSE.txt`, import.meta.url));
 }
+execFileSync(process.env.PYTHON || 'python', ['scripts/subset_fonts.py'], { stdio: 'inherit' });
 for (const width of [128, 256, 512]) {
   for (const format of ['webp', 'avif']) {
     await sharp('source/profile.jpeg').rotate().resize(width, Math.round(width * 1.125), { fit: 'cover', position: 'attention' }).toFormat(format, { quality: 72 }).toFile(new URL(`profile-${width}.${format}`, output).pathname.replace(/^\/(?=[A-Za-z]:)/, ''));

@@ -18,12 +18,15 @@ try{
         await page.setViewportSize({width,height:900});
         await page.goto(base+path);
         await page.evaluate(()=>document.fonts.ready);
-        await page.locator('footer').scrollIntoViewIfNeeded();
-        await page.waitForFunction(()=>Array.from(document.images).every(img=>img.complete));
+        // Visit each lazy image instead of jumping over it to the footer.
+        for(const img of await page.locator('picture img').all()) {
+          await img.scrollIntoViewIfNeeded();
+          await img.evaluate(el => el.decode());
+        }
         await page.evaluate(()=>scrollTo(0,0));
         assert.equal(await page.locator('h1').count(),1,`one h1: ${path}`);
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`overflow: ${path} ${width}`);
-        assert.equal(await page.locator('img').evaluateAll(imgs=>imgs.some(img=>!img.naturalWidth)),false,`broken image: ${path}`);
+        assert.equal(await page.locator('picture img').evaluateAll(imgs=>imgs.some(img=>!img.naturalWidth)),false,`broken image: ${path}`);
         const axe=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','best-practice']).analyze();
         if(axe.violations.length) console.log(JSON.stringify(axe.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))})),null,2));
         assert.equal(axe.violations.length,0,`axe: ${path} ${width} ${theme}`);
@@ -48,7 +51,28 @@ try{
   const download=await context.request.get(base+'assets/cv/Towhidul-Islam-Rafi-CV.pdf');
   assert.equal(download.status(),200);
   assert.equal((await download.body()).subarray(0,4).toString(),'%PDF');
-  assert.equal(await page.locator('[role="dialog"]').count(),0);
+  assert.equal(await page.locator('dialog[open]').count(),0);
+  await page.setViewportSize({width:390,height:844});
+  await page.reload();
+  assert.equal(await page.locator('.mobile-dock').isVisible(),true);
+  assert.equal(await page.locator('.project-details[open]').count(),0);
+  await page.locator('.work-navigation a[href="#api-project"]').click();
+  await page.waitForFunction(()=>location.hash==='#api-project');
+  await page.locator('#api-project summary').click();
+  assert.equal(await page.locator('#api-project details').getAttribute('open'),'');
+  const previewLink=page.getByRole('link',{name:'Inspect diagram: ERP request lifecycle'});
+  await previewLink.click();
+  assert.equal(await page.getByRole('dialog').isVisible(),true);
+  const dialogAxe=await new AxeBuilder({page}).analyze();
+  assert.equal(dialogAxe.violations.length,0,'accessible visual dialog');
+  await page.getByRole('button',{name:'Zoom in',exact:true}).click();
+  assert.equal(await page.getByRole('button',{name:'Fit to screen'}).getAttribute('aria-pressed'),'true');
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('dialog[open]').count(),0);
+  assert.equal(await previewLink.evaluate(el=>el===document.activeElement),true,'dialog restores focus');
+  await page.locator('.mobile-dock a[href="#contact"]').click();
+  await page.locator('#contact-name').focus();
+  assert.equal(await page.locator('.mobile-dock').isVisible(),false,'dock stays clear of text input');
   // Mock EmailJS: verify real UI handling without sending any mail.
   let requests=0;
   await page.route('https://api.emailjs.com/**',async route=>{requests++;await route.abort();});
@@ -89,7 +113,13 @@ try{
   for(const path of ['','work/rdlc-reporting.html','work/erp-api.html']){
     await noJSPage.goto(base+path);
     assert.equal(await noJSPage.locator('h1').isVisible(),true);
-    if(!path){assert.equal(await noJSPage.locator('#work').isVisible(),true);assert.equal(await noJSPage.getByText('Use the email link to get in touch.').isVisible(),true);}
+    if(!path){
+      assert.equal(await noJSPage.locator('#work').isVisible(),true);
+      assert.equal(await noJSPage.locator('noscript').isVisible(),true);
+      assert.match(await noJSPage.locator('noscript').innerText(),/Use the email link/);
+      assert.equal(await noJSPage.locator('a[href="mailto:tirafi29@gmail.com"]').isVisible(),true);
+      assert.equal(await noJSPage.locator('.project-details[open]').count(),3);
+    }
   }
   await noJS.close();
   // Verify shipped JS budget, all relative links and images, and local image budget.
@@ -109,6 +139,6 @@ try{
     }
   }
   await linkContext.close();
-  await writeFile('.qa/test-results.json',JSON.stringify({results,jsGzipBytes:jsSize,checks:['keyboard skip link','theme persistence','direct CV download','no modal','blocked form delivery','mocked success','honeypot','XSS string as text','no JavaScript','local links']},null,2));
+  await writeFile('.qa/test-results.json',JSON.stringify({results,jsGzipBytes:jsSize,checks:['keyboard skip link','theme persistence','direct CV download','no auto-opening dialog','project navigation and disclosure','visual preview, zoom, Escape and focus return','dock hides during text entry','blocked form delivery','mocked success','honeypot','XSS string as text','no JavaScript','local links']},null,2));
   console.log(`PASS: ${results.length} page/viewport/theme axe checks; behavior and link checks; JS ${jsSize} bytes gzip.`);
 }finally{await browser.close();}

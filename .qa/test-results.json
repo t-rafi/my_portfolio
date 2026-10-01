@@ -1,0 +1,209 @@
+{
+  "results": [
+    {
+      "page": "index.html",
+      "width": 360,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "index.html",
+      "width": 768,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "index.html",
+      "width": 1280,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "index.html",
+      "width": 1920,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/rdlc-reporting.html",
+      "width": 360,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/rdlc-reporting.html",
+      "width": 768,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/rdlc-reporting.html",
+      "width": 1280,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/rdlc-reporting.html",
+      "width": 1920,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/erp-api.html",
+      "width": 360,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/erp-api.html",
+      "width": 768,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/erp-api.html",
+      "width": 1280,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/erp-api.html",
+      "width": 1920,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "404.html",
+      "width": 360,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "404.html",
+      "width": 768,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "404.html",
+      "width": 1280,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "404.html",
+      "width": 1920,
+      "theme": "light",
+      "axeViolations": 0
+    },
+    {
+      "page": "index.html",
+      "width": 360,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "index.html",
+      "width": 768,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "index.html",
+      "width": 1280,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "index.html",
+      "width": 1920,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/rdlc-reporting.html",
+      "width": 360,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/rdlc-reporting.html",
+      "width": 768,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/rdlc-reporting.html",
+      "width": 1280,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/rdlc-reporting.html",
+      "width": 1920,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/erp-api.html",
+      "width": 360,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/erp-api.html",
+      "width": 768,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/erp-api.html",
+      "width": 1280,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "work/erp-api.html",
+      "width": 1920,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "404.html",
+      "width": 360,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "404.html",
+      "width": 768,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "404.html",
+      "width": 1280,
+      "theme": "dark",
+      "axeViolations": 0
+    },
+    {
+      "page": "404.html",
+      "width": 1920,
+      "theme": "dark",
+      "axeViolations": 0
+    }
+  ],
+  "jsGzipBytes": 2649,
+  "checks": [
+    "keyboard skip link",
+    "theme persistence",
+    "direct CV download",
+    "no modal",
+    "blocked form delivery",
+    "mocked success",
+    "honeypot",
+    "XSS string as text",
+    "no JavaScript",
+    "local links"
+  ]
+}

@@ -28,11 +28,89 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 }
 
+const phoneLayout = matchMedia('(max-width: 640px)');
+const projectDetails = [...document.querySelectorAll('.project-details')];
+const fitDetails = () => projectDetails.forEach(details => { details.open = !phoneLayout.matches; });
+fitDetails();
+phoneLayout.addEventListener('change', fitDetails);
+
+const navigationGroups = ['.mobile-dock', '.work-navigation', '.case-navigation'].map(selector => {
+  return [...document.querySelectorAll(`${selector} a[href^="#"]`)].map(link => ({
+    link, section: document.querySelector(link.getAttribute('href'))
+  })).filter(item => item.section);
+});
+let scrollQueued = false;
+const updateNavigation = () => {
+  for (const group of navigationGroups) {
+    if (!group.length) continue;
+    let active = group[0];
+    for (const item of group) {
+      if (item.section.getBoundingClientRect().top <= innerHeight * 0.38) active = item;
+    }
+    for (const item of group) {
+      if (item === active) item.link.setAttribute('aria-current', 'location');
+      else item.link.removeAttribute('aria-current');
+    }
+  }
+  scrollQueued = false;
+};
+const queueNavigation = () => {
+  if (!scrollQueued) { scrollQueued = true; requestAnimationFrame(updateNavigation); }
+};
+addEventListener('scroll', queueNavigation, { passive: true });
+addEventListener('resize', queueNavigation);
+updateNavigation();
+
+const visualDialog = document.querySelector('.visual-dialog');
+if (visualDialog?.showModal) {
+  const preview = visualDialog.querySelector('img');
+  const viewport = visualDialog.querySelector('.visual-viewport');
+  const zoomButton = visualDialog.querySelector('[data-zoom-visual]');
+  document.querySelectorAll('[data-visual-title]').forEach(link => {
+    link.addEventListener('click', event => {
+      event.preventDefault();
+      const title = link.dataset.visualTitle;
+      visualDialog.querySelector('h2').textContent = title;
+      visualDialog.querySelector('[data-visual-caption]').textContent = link.dataset.visualCaption;
+      preview.alt = link.closest('figure, .project-visual').querySelector('picture img').alt;
+      preview.src = link.href;
+      visualDialog.showModal();
+      visualDialog.querySelector('[data-close-visual]').focus();
+    });
+  });
+  visualDialog.querySelector('[data-close-visual]').addEventListener('click', () => visualDialog.close());
+  visualDialog.addEventListener('click', event => { if (event.target === visualDialog) visualDialog.close(); });
+  zoomButton.addEventListener('click', () => {
+    const zoomed = viewport.classList.toggle('is-zoomed');
+    zoomButton.setAttribute('aria-pressed', String(zoomed));
+    zoomButton.textContent = zoomed ? 'Fit to screen' : 'Zoom in';
+  });
+  visualDialog.addEventListener('close', () => {
+    viewport.classList.remove('is-zoomed');
+    zoomButton.setAttribute('aria-pressed', 'false');
+    zoomButton.textContent = 'Zoom in';
+    viewport.scrollTo(0, 0);
+  });
+}
+
+const copyEmail = document.querySelector('[data-copy-email]');
+if (copyEmail && navigator.clipboard?.writeText) {
+  copyEmail.hidden = false;
+  copyEmail.addEventListener('click', async () => {
+    const status = document.querySelector('[data-copy-status]');
+    try {
+      await navigator.clipboard.writeText('tirafi29@gmail.com');
+      status.textContent = 'Copied';
+    } catch { status.textContent = 'Please use the email link.'; }
+  });
+}
+
 const form = document.querySelector('[data-contact-form]');
 if (form) {
   form.hidden = false;
   const status = form.querySelector('[role="status"]');
   const button = form.querySelector('button[type="submit"]');
+  button.disabled = false;
   let firstInteraction = 0;
   let lastAttempt = 0;
   let sending = false;
